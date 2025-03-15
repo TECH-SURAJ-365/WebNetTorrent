@@ -134,11 +134,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 streamButton.className = 'btn btn-success btn-sm';
                 streamButton.innerHTML = '<i class="fas fa-play"></i> Stream';
                 streamButton.onclick = () => {
-                    if (file.ready) {
+                    if (file.downloaded === file.length) {
                         streamFile(file);
                     } else {
-                        console.error('File is not ready for streaming:', file.name);
-                        alert('File is not ready for streaming. Please wait for the download to complete.');
+                        console.error('File is not fully downloaded:', file.name);
+                        alert('File is not fully downloaded. Please wait for the download to complete.');
                     }
                 };
                 listItem.appendChild(streamButton);
@@ -211,20 +211,22 @@ document.addEventListener('DOMContentLoaded', function () {
         // Debugging: Log the file being streamed
         console.log('Streaming file:', file.name);
 
-        // Check if the file is ready for streaming
-        if (!file.ready) {
-            console.error('File is not ready for streaming:', file.name);
-            alert('File is not ready for streaming. Please wait for the download to complete.');
-            return;
-        }
+        // Create a readable stream from the file
+        const stream = file.createReadStream();
+        const chunks = [];
 
-        // Render the file to the video element
-        file.renderTo(videoElement, { controls: true }, err => {
-            if (err) {
-                console.error('Error rendering file:', err);
-                alert('Error streaming file. Please try again.');
-                return;
-            }
+        // Collect chunks of the file
+        stream.on('data', chunk => {
+            chunks.push(chunk);
+        });
+
+        // When the stream ends, create a Blob and set it as the video source
+        stream.on('end', () => {
+            const blob = new Blob(chunks, { type: file.type });
+            const objectURL = URL.createObjectURL(blob);
+
+            // Set the video source
+            videoElement.src = objectURL;
 
             // Show unmute button
             unmuteButton.style.display = 'block';
@@ -235,6 +237,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Debugging: Log successful rendering
             console.log('File rendered successfully:', file.name);
+        });
+
+        // Handle stream errors
+        stream.on('error', err => {
+            console.error('Error streaming file:', err);
+            alert('Error streaming file. Please try again.');
         });
     }
 
