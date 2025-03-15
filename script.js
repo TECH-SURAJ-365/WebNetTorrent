@@ -11,6 +11,11 @@ const trackers = [
 
 // Function to start torrent with additional trackers
 function startTorrent(torrentId) {
+    if (!torrentId) {
+        alert('Invalid torrent identifier. Please provide a valid .torrent file or magnet link.');
+        return;
+    }
+
     client.add(torrentId, { announce: trackers }, torrent => {
         displayFiles(torrent);
         updatePeerList(torrent);
@@ -24,7 +29,7 @@ function startTorrent(torrentId) {
         });
     }).on('error', err => {
         console.error('Error adding torrent:', err);
-        alert('Invalid torrent. Please try again.');
+        alert('Invalid torrent. Please upload a valid .torrent file or provide a valid magnet link.');
     });
 }
 
