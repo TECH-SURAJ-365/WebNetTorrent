@@ -10,13 +10,19 @@
     <link href="https://cdn.plyr.io/3.7.8/plyr.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <!-- Animate.css -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="styles.css">
 </head>
-<body class="bg-light">
+<body class="dark-mode">
     <div class="container my-5">
+        <!-- Dark Mode Toggle -->
+        <div class="text-end mb-4">
+            <button id="darkModeToggle" class="btn btn-secondary">
+                <i class="fas fa-moon"></i> Dark Mode
+            </button>
+        </div>
+
+        <!-- Header -->
         <div class="text-center mb-4">
             <h1 class="display-4 animate__animated animate__fadeInDown">Torrent Explorer</h1>
             <p class="lead text-muted animate__animated animate__fadeInUp">Enter a magnet link or upload a .torrent file to download or stream media instantly.</p>
@@ -60,11 +66,11 @@
             </div>
         </div>
 
-        <!-- File List -->
+        <!-- Peer Information -->
         <div class="card shadow-sm mt-4 animate__animated animate__fadeIn">
             <div class="card-body">
-                <h2 class="h4 mb-3">Files</h2>
-                <ul id="fileList" class="list-group"></ul>
+                <h2 class="h4 mb-3">Peers</h2>
+                <ul id="peerList" class="list-group"></ul>
             </div>
         </div>
 
@@ -75,6 +81,15 @@
                 <div id="downloadProgress" class="progress" style="display: none;">
                     <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%;"></div>
                 </div>
+                <p id="progressText" class="mt-2"></p>
+            </div>
+        </div>
+
+        <!-- File List -->
+        <div class="card shadow-sm mt-4 animate__animated animate__fadeIn">
+            <div class="card-body">
+                <h2 class="h4 mb-3">Files</h2>
+                <ul id="fileList" class="list-group"></ul>
             </div>
         </div>
 
@@ -83,6 +98,9 @@
             <div class="card-body">
                 <h2 class="h4 mb-3">Stream</h2>
                 <div id="videoPlayer"></div>
+                <button id="unmuteButton" class="btn btn-secondary mt-3" style="display: none;">
+                    <i class="fas fa-volume-mute"></i> Tap to Unmute
+                </button>
             </div>
         </div>
     </div>

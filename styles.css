@@ -1,8 +1,50 @@
+/* Light Mode */
 body {
     font-family: 'Arial', sans-serif;
     background-color: #f8f9fa;
+    color: #333;
 }
 
+/* Dark Mode */
+body.dark-mode {
+    background-color: #1a1a1a;
+    color: #f8f9fa;
+}
+
+.dark-mode .card {
+    background-color: #2d2d2d;
+    border-color: #444;
+}
+
+.dark-mode .list-group-item {
+    background-color: #2d2d2d;
+    border-color: #444;
+    color: #f8f9fa;
+}
+
+.dark-mode .nav-tabs .nav-link {
+    color: #f8f9fa;
+}
+
+.dark-mode .nav-tabs .nav-link.active {
+    color: #007bff;
+    border-bottom: 2px solid #007bff;
+}
+
+.dark-mode .progress {
+    background-color: #444;
+}
+
+.dark-mode .progress-bar {
+    background-color: #007bff;
+}
+
+.dark-mode .btn-secondary {
+    background-color: #444;
+    border-color: #444;
+}
+
+/* General Styles */
 .container {
     max-width: 800px;
 }
@@ -28,16 +70,6 @@ body {
     overflow: hidden;
 }
 
-.nav-tabs .nav-link {
-    border: none;
-    color: #6c757d;
-}
-
-.nav-tabs .nav-link.active {
-    color: #007bff;
-    border-bottom: 2px solid #007bff;
-}
-
 .progress {
     height: 20px;
     margin-bottom: 20px;
@@ -45,4 +77,8 @@ body {
 
 .progress-bar {
     background-color: #007bff;
+}
+
+#unmuteButton {
+    display: none; /* Hidden by default */
 }

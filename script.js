@@ -1,6 +1,15 @@
 const client = new WebTorrent();
 let player;
 
+// Dark Mode Toggle
+const darkModeToggle = document.getElementById('darkModeToggle');
+darkModeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+    darkModeToggle.innerHTML = document.body.classList.contains('dark-mode')
+        ? '<i class="fas fa-sun"></i> Light Mode'
+        : '<i class="fas fa-moon"></i> Dark Mode';
+});
+
 // Add more trackers
 const trackers = [
     'wss://tracker.btorrent.xyz',
@@ -13,6 +22,8 @@ const trackers = [
 function startTorrent(torrentId) {
     client.add(torrentId, { announce: trackers }, torrent => {
         displayFiles(torrent);
+        updatePeerList(torrent);
+        updateDownloadProgress(torrent);
 
         // Prioritize downloading for non-media files
         torrent.files.forEach(file => {
@@ -80,12 +91,74 @@ function displayFiles(torrent) {
     });
 }
 
+// Update Peer List
+async function updatePeerList(torrent) {
+    const peerList = document.getElementById('peerList');
+    peerList.innerHTML = ''; // Clear previous list
+
+    // Update peer list every second
+    setInterval(async () => {
+        peerList.innerHTML = ''; // Clear previous list
+        if (torrent.wires.length === 0) {
+            const peerItem = document.createElement('li');
+            peerItem.className = 'list-group-item';
+            peerItem.textContent = 'No peers found.';
+            peerList.appendChild(peerItem);
+        } else {
+            for (const wire of torrent.wires) {
+                const peerItem = document.createElement('li');
+                peerItem.className = 'list-group-item';
+
+                const ipAddress = wire.remoteAddress || 'Unknown';
+                let country = 'Unknown';
+
+                // Fetch country name using ip-api.com
+                if (ipAddress !== 'Unknown') {
+                    try {
+                        const response = await fetch(`http://ip-api.com/json/${ipAddress}`);
+                        const data = await response.json();
+                        if (data.status === 'success') {
+                            country = data.country;
+                        }
+                    } catch (error) {
+                        console.error('Error fetching country:', error);
+                    }
+                }
+
+                peerItem.textContent = `${ipAddress} (${country})`;
+                peerList.appendChild(peerItem);
+            }
+        }
+    }, 1000); // Update every second
+}
+
+// Update Download Progress
+function updateDownloadProgress(torrent) {
+    const downloadProgress = document.getElementById('downloadProgress');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+
+    downloadProgress.style.display = 'block'; // Show progress bar
+
+    // Update progress every second
+    setInterval(() => {
+        const percent = (torrent.progress * 100).toFixed(2);
+        progressBar.style.width = `${percent}%`; // Update progress bar width
+
+        const downloaded = (torrent.downloaded / 1024 / 1024).toFixed(2);
+        const total = (torrent.length / 1024 / 1024).toFixed(2);
+        const timeRemaining = torrent.timeRemaining / 1000;
+        progressText.textContent = `${downloaded} MB of ${total} MB — ${timeRemaining.toFixed(2)} seconds remaining.`;
+    }, 1000); // Update every second
+}
+
 // Download File
 function downloadFile(file) {
     const downloadProgress = document.getElementById('downloadProgress');
     const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
 
-    if (!downloadProgress || !progressBar) {
+    if (!downloadProgress || !progressBar || !progressText) {
         console.error('Progress elements not found in the DOM.');
         alert('Error: Progress elements not found. Please refresh the page.');
         return;
@@ -135,6 +208,7 @@ function downloadFile(file) {
 // Stream File
 function streamFile(file) {
     const videoPlayerContainer = document.getElementById('videoPlayer');
+    const unmuteButton = document.getElementById('unmuteButton');
     videoPlayerContainer.innerHTML = ''; // Clear previous player
 
     // Create a video element
@@ -155,6 +229,13 @@ function streamFile(file) {
         player = new Plyr(videoElement, {
             controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen']
         });
+
+        // Show unmute button
+        unmuteButton.style.display = 'block';
+        unmuteButton.onclick = () => {
+            player.muted = false;
+            unmuteButton.style.display = 'none';
+        };
 
         // Handle Plyr errors
         player.on('error', err => {
