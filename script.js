@@ -1,15 +1,6 @@
 const client = new WebTorrent();
 let player;
 
-// Dark Mode Toggle
-const darkModeToggle = document.getElementById('darkModeToggle');
-darkModeToggle.addEventListener('click', () => {
-    document.body.classList.toggle('dark-mode');
-    darkModeToggle.innerHTML = document.body.classList.contains('dark-mode')
-        ? '<i class="fas fa-sun"></i> Light Mode'
-        : '<i class="fas fa-moon"></i> Dark Mode';
-});
-
 // Add more trackers
 const trackers = [
     'wss://tracker.btorrent.xyz',
@@ -93,22 +84,19 @@ function displayFiles(torrent) {
 
 // Update Peer List
 async function updatePeerList(torrent) {
-    const peerList = document.getElementById('peerList');
-    peerList.innerHTML = ''; // Clear previous list
+    const peerTree = document.getElementById('peerTree');
+    peerTree.innerHTML = ''; // Clear previous list
 
     // Update peer list every second
     setInterval(async () => {
-        peerList.innerHTML = ''; // Clear previous list
+        peerTree.innerHTML = ''; // Clear previous list
         if (torrent.wires.length === 0) {
             const peerItem = document.createElement('li');
-            peerItem.className = 'list-group-item';
             peerItem.textContent = 'No peers found.';
-            peerList.appendChild(peerItem);
+            peerTree.appendChild(peerItem);
         } else {
             for (const wire of torrent.wires) {
                 const peerItem = document.createElement('li');
-                peerItem.className = 'list-group-item';
-
                 const ipAddress = wire.remoteAddress || 'Unknown';
                 let country = 'Unknown';
 
@@ -126,7 +114,7 @@ async function updatePeerList(torrent) {
                 }
 
                 peerItem.textContent = `${ipAddress} (${country})`;
-                peerList.appendChild(peerItem);
+                peerTree.appendChild(peerItem);
             }
         }
     }, 1000); // Update every second
