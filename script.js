@@ -2,12 +2,15 @@ document.addEventListener('DOMContentLoaded', function () {
     const client = new WebTorrent();
     let player;
 
-    // Add more trackers
+    // Add more reliable trackers
     const trackers = [
         'wss://tracker.btorrent.xyz',
         'wss://tracker.openwebtorrent.com',
-        'wss://tracker.fastcast.nz',
-        'udp://tracker.opentrackr.org:1337/announce' // Fallback UDP tracker
+        'wss://tracker.webtorrent.io',
+        'udp://tracker.opentrackr.org:1337/announce',
+        'udp://open.demonii.com:1337/announce',
+        'udp://tracker.coppersurfer.tk:6969/announce',
+        'udp://tracker.leechers-paradise.org:6969/announce'
     ];
 
     // Function to start torrent with additional trackers
@@ -126,7 +129,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 const streamButton = document.createElement('button');
                 streamButton.className = 'btn btn-success btn-sm';
                 streamButton.innerHTML = '<i class="fas fa-play"></i> Stream';
-                streamButton.onclick = () => streamFile(file);
+                streamButton.onclick = () => {
+                    if (file.ready) {
+                        streamFile(file);
+                    } else {
+                        console.error('File is not ready for streaming:', file.name);
+                        alert('File is not ready for streaming. Please wait for the download to complete.');
+                    }
+                };
                 listItem.appendChild(streamButton);
             }
 
@@ -194,6 +204,9 @@ document.addEventListener('DOMContentLoaded', function () {
         videoElement.style.width = '100%'; // Make the video responsive
         videoPlayer.appendChild(videoElement);
 
+        // Debugging: Log the file being streamed
+        console.log('Streaming file:', file.name);
+
         // Render the file to the video element
         file.renderTo(videoElement, { controls: true }, err => {
             if (err) {
@@ -208,6 +221,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 videoElement.muted = false;
                 unmuteButton.style.display = 'none';
             };
+
+            // Debugging: Log successful rendering
+            console.log('File rendered successfully:', file.name);
         });
     }
 
