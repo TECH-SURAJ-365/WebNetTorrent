@@ -16,6 +16,15 @@ function startTorrent(torrentId) {
         return;
     }
 
+    // Check if torrentId is a valid magnet link or Uint8Array
+    if (typeof torrentId === 'string' && !isValidMagnetLink(torrentId)) {
+        alert('Invalid magnet link. Please provide a valid magnet link.');
+        return;
+    } else if (torrentId instanceof Uint8Array && torrentId.length === 0) {
+        alert('Invalid .torrent file. Please upload a valid .torrent file.');
+        return;
+    }
+
     client.add(torrentId, { announce: trackers }, torrent => {
         displayFiles(torrent);
         updateDownloadProgress(torrent);
@@ -32,6 +41,11 @@ function startTorrent(torrentId) {
     });
 }
 
+// Check if a magnet link is valid
+function isValidMagnetLink(link) {
+    return link.startsWith('magnet:?');
+}
+
 // Check if a file is a media file
 function isMediaFile(filename) {
     const mediaExtensions = ['.mp4', '.mkv', '.mp3', '.webm'];
@@ -41,14 +55,18 @@ function isMediaFile(filename) {
 // Handle Magnet Link
 function startMagnet() {
     const magnetLink = document.getElementById('magnetLink').value;
-    if (!magnetLink) return alert('Please enter a magnet link.');
+    if (!isValidMagnetLink(magnetLink)) {
+        return alert('Invalid magnet link. Please enter a valid magnet link.');
+    }
     startTorrent(magnetLink);
 }
 
 // Handle Torrent File Upload
 document.getElementById('torrentFile').addEventListener('change', function (event) {
     const file = event.target.files[0];
-    if (!file) return;
+    if (!file || !file.name.endsWith('.torrent')) {
+        return alert('Please upload a valid .torrent file.');
+    }
 
     const reader = new FileReader();
     reader.onload = function (e) {
