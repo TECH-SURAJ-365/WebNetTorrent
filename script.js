@@ -89,33 +89,39 @@ async function updatePeerList(torrent) {
 
     // Update peer list every second
     setInterval(async () => {
-        peerTree.innerHTML = ''; // Clear previous list
-        if (torrent.wires.length === 0) {
+        const uniqueCountries = new Set(); // Store unique country names
+
+        for (const wire of torrent.wires) {
+            const ipAddress = wire.remoteAddress || 'Unknown';
+
+            // Fetch country name using ip-api.com
+            if (ipAddress !== 'Unknown') {
+                try {
+                    const response = await fetch(`http://ip-api.com/json/${ipAddress}`);
+                    const data = await response.json();
+                    if (data.status === 'success') {
+                        uniqueCountries.add(data.country); // Add country to the Set
+                    }
+                } catch (error) {
+                    console.error('Error fetching country:', error);
+                }
+            }
+        }
+
+        // Clear previous list
+        peerTree.innerHTML = '';
+
+        // Display unique countries
+        if (uniqueCountries.size === 0) {
             const peerItem = document.createElement('li');
             peerItem.textContent = 'No peers found.';
             peerTree.appendChild(peerItem);
         } else {
-            for (const wire of torrent.wires) {
+            uniqueCountries.forEach(country => {
                 const peerItem = document.createElement('li');
-                const ipAddress = wire.remoteAddress || 'Unknown';
-                let country = 'Unknown';
-
-                // Fetch country name using ip-api.com
-                if (ipAddress !== 'Unknown') {
-                    try {
-                        const response = await fetch(`http://ip-api.com/json/${ipAddress}`);
-                        const data = await response.json();
-                        if (data.status === 'success') {
-                            country = data.country;
-                        }
-                    } catch (error) {
-                        console.error('Error fetching country:', error);
-                    }
-                }
-
-                peerItem.textContent = `${ipAddress} (${country})`;
+                peerItem.textContent = country;
                 peerTree.appendChild(peerItem);
-            }
+            });
         }
     }, 1000); // Update every second
 }
