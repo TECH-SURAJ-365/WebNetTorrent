@@ -18,7 +18,6 @@ function startTorrent(torrentId) {
 
     client.add(torrentId, { announce: trackers }, torrent => {
         displayFiles(torrent);
-        updatePeerList(torrent);
         updateDownloadProgress(torrent);
 
         // Prioritize downloading for non-media files
@@ -60,7 +59,7 @@ function displayFiles(torrent) {
 
     torrent.files.forEach(file => {
         const listItem = document.createElement('li');
-        listItem.className = 'list-group-item animate__animated animate__fadeIn';
+        listItem.className = 'list-group-item';
 
         // File name
         const fileName = document.createElement('span');
@@ -87,57 +86,10 @@ function displayFiles(torrent) {
     });
 }
 
-// Update Peer List
-async function updatePeerList(torrent) {
-    const peerTree = document.getElementById('peerTree');
-    peerTree.innerHTML = ''; // Clear previous list
-
-    // Update peer list every second
-    setInterval(async () => {
-        const uniqueCountries = new Set(); // Store unique country names
-
-        for (const wire of torrent.wires) {
-            const ipAddress = wire.remoteAddress || 'Unknown';
-
-            // Fetch country name using ip-api.com
-            if (ipAddress !== 'Unknown') {
-                try {
-                    const response = await fetch(`http://ip-api.com/json/${ipAddress}`);
-                    const data = await response.json();
-                    if (data.status === 'success') {
-                        uniqueCountries.add(data.country); // Add country to the Set
-                    }
-                } catch (error) {
-                    console.error('Error fetching country:', error);
-                }
-            }
-        }
-
-        // Clear previous list
-        peerTree.innerHTML = '';
-
-        // Display unique countries
-        if (uniqueCountries.size === 0) {
-            const peerItem = document.createElement('li');
-            peerItem.textContent = 'No peers found.';
-            peerTree.appendChild(peerItem);
-        } else {
-            uniqueCountries.forEach(country => {
-                const peerItem = document.createElement('li');
-                peerItem.textContent = country;
-                peerTree.appendChild(peerItem);
-            });
-        }
-    }, 1000); // Update every second
-}
-
 // Update Download Progress
 function updateDownloadProgress(torrent) {
-    const downloadProgress = document.getElementById('downloadProgress');
     const progressBar = document.getElementById('progressBar');
     const progressText = document.getElementById('progressText');
-
-    downloadProgress.style.display = 'block'; // Show progress bar
 
     // Update progress every second
     setInterval(() => {
@@ -153,27 +105,11 @@ function updateDownloadProgress(torrent) {
 
 // Download File
 function downloadFile(file) {
-    const downloadProgress = document.getElementById('downloadProgress');
-    const progressBar = document.getElementById('progressBar');
-    const progressText = document.getElementById('progressText');
-
-    if (!downloadProgress || !progressBar || !progressText) {
-        console.error('Progress elements not found in the DOM.');
-        alert('Error: Progress elements not found. Please refresh the page.');
-        return;
-    }
-
-    downloadProgress.style.display = 'block'; // Show progress bar
-
     const blobStream = file.createReadStream(); // Create a readable stream
     const chunks = [];
 
     blobStream.on('data', chunk => {
         chunks.push(chunk); // Collect chunks of the file
-
-        // Update progress bar
-        const percent = (chunks.length / file.numChunks) * 100;
-        progressBar.style.width = `${percent}%`;
     });
 
     blobStream.on('end', () => {
@@ -188,19 +124,11 @@ function downloadFile(file) {
 
         // Clean up the object URL
         URL.revokeObjectURL(link.href);
-
-        // Hide progress bar
-        downloadProgress.style.display = 'none';
-        progressBar.style.width = '0%';
     });
 
     blobStream.on('error', err => {
         console.error('Error downloading file:', err);
         alert('Error downloading file. Please try again.');
-
-        // Hide progress bar on error
-        downloadProgress.style.display = 'none';
-        progressBar.style.width = '0%';
     });
 }
 

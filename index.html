@@ -17,8 +17,8 @@
     <div class="container my-5">
         <!-- Header -->
         <div class="text-center mb-4">
-            <h1 class="display-4 animate__animated animate__fadeInDown">Torrent Explorer</h1>
-            <p class="lead text-muted animate__animated animate__fadeInUp">Enter a magnet link or upload a .torrent file to download or stream media instantly.</p>
+            <h1 class="display-4">Torrent Explorer</h1>
+            <p class="lead text-muted">Enter a magnet link or upload a .torrent file to download or stream media instantly.</p>
         </div>
 
         <!-- Tabs for Magnet Link and File Upload -->
@@ -59,27 +59,19 @@
             </div>
         </div>
 
-        <!-- Peer Information -->
-        <div class="card shadow-sm mt-4 animate__animated animate__fadeIn">
-            <div class="card-body">
-                <h2 class="h4 mb-3">Peers</h2>
-                <div id="peerTree" class="tree-view"></div>
-            </div>
-        </div>
-
         <!-- Download Progress -->
-        <div class="card shadow-sm mt-4 animate__animated animate__fadeIn">
+        <div class="card shadow-sm mt-4">
             <div class="card-body">
                 <h2 class="h4 mb-3">Download Progress</h2>
-                <div id="downloadProgress" class="progress" style="display: none;">
+                <div id="progressText" class="mb-2"></div>
+                <div class="progress" style="height: 10px;">
                     <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%;"></div>
                 </div>
-                <p id="progressText" class="mt-2"></p>
             </div>
         </div>
 
         <!-- File List -->
-        <div class="card shadow-sm mt-4 animate__animated animate__fadeIn">
+        <div class="card shadow-sm mt-4">
             <div class="card-body">
                 <h2 class="h4 mb-3">Files</h2>
                 <ul id="fileList" class="list-group"></ul>
@@ -87,7 +79,7 @@
         </div>
 
         <!-- Video Player -->
-        <div class="card shadow-sm mt-4 animate__animated animate__fadeIn">
+        <div class="card shadow-sm mt-4">
             <div class="card-body">
                 <h2 class="h4 mb-3">Stream</h2>
                 <div id="videoPlayer"></div>
