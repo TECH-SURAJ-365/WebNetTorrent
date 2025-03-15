@@ -74,13 +74,13 @@ document.getElementById('torrentFile').addEventListener('change', function (even
             // Convert the file data to a Uint8Array
             const torrentData = new Uint8Array(e.target.result);
 
+            // Debugging: Log the torrent data
+            console.log('Torrent data:', torrentData);
+
             // Validate the torrent data
             if (torrentData.length === 0) {
                 throw new Error('The .torrent file is empty or invalid.');
             }
-
-            // Debugging: Log the torrent data
-            console.log('Torrent data:', torrentData);
 
             // Start the torrent
             startTorrent(torrentData);
