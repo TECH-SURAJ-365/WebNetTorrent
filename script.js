@@ -22,7 +22,7 @@ function startTorrent(torrentId) {
 
         // Prioritize downloading for non-media files
         torrent.files.forEach(file => {
-            if (!file.name.endsWith('.mp4') && !file.name.endsWith('.mkv') && !file.name.endsWith('.mp3')) {
+            if (!isMediaFile(file.name)) {
                 file.priority = 1; // High priority for non-media files
             }
         });
@@ -30,6 +30,12 @@ function startTorrent(torrentId) {
         console.error('Error adding torrent:', err);
         alert('Invalid torrent. Please upload a valid .torrent file or provide a valid magnet link.');
     });
+}
+
+// Check if a file is a media file
+function isMediaFile(filename) {
+    const mediaExtensions = ['.mp4', '.mkv', '.mp3', '.webm'];
+    return mediaExtensions.some(ext => filename.endsWith(ext));
 }
 
 // Handle Magnet Link
@@ -74,7 +80,7 @@ function displayFiles(torrent) {
         listItem.appendChild(downloadButton);
 
         // Stream button for media files
-        if (file.name.endsWith('.mp4') || file.name.endsWith('.mkv') || file.name.endsWith('.mp3')) {
+        if (isMediaFile(file.name)) {
             const streamButton = document.createElement('button');
             streamButton.className = 'btn btn-success btn-sm';
             streamButton.innerHTML = '<i class="fas fa-play"></i> Stream';
