@@ -1,16 +1,4 @@
-// Define startMagnet globally
-function startMagnet() {
-    const magnetLink = document.getElementById('magnetLink').value;
-    if (!isValidMagnetLink(magnetLink)) {
-        return alert('Invalid magnet link. Please enter a valid magnet link.');
-    }
-    startTorrent(magnetLink);
-}
-
-// Attach the event listener
 document.addEventListener('DOMContentLoaded', function () {
-    document.getElementById('startMagnetButton').addEventListener('click', startMagnet);
-
     const client = new WebTorrent();
     let player;
 
@@ -64,6 +52,15 @@ document.addEventListener('DOMContentLoaded', function () {
         const mediaExtensions = ['.mp4', '.mkv', '.mp3', '.webm'];
         return mediaExtensions.some(ext => filename.endsWith(ext));
     }
+
+    // Handle Magnet Link
+    document.getElementById('startMagnetButton').addEventListener('click', function () {
+        const magnetLink = document.getElementById('magnetLink').value;
+        if (!isValidMagnetLink(magnetLink)) {
+            return alert('Invalid magnet link. Please enter a valid magnet link.');
+        }
+        startTorrent(magnetLink);
+    });
 
     // Handle Torrent File Upload
     document.getElementById('torrentFile').addEventListener('change', function (event) {

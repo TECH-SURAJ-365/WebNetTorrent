@@ -1,3 +1,4 @@
+/* General Styles */
 body {
     font-family: 'Arial', sans-serif;
     background-color: #f8f9fa;
@@ -11,6 +12,11 @@ body {
 .card {
     border: none;
     border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.card-body {
+    padding: 20px;
 }
 
 .list-group-item {
@@ -40,4 +46,26 @@ body {
 
 #unmuteButton {
     display: none; /* Hidden by default */
+}
+
+.input-group {
+    margin-bottom: 10px;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border: none;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
 }
