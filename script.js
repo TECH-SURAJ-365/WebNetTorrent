@@ -70,9 +70,29 @@ document.getElementById('torrentFile').addEventListener('change', function (even
 
     const reader = new FileReader();
     reader.onload = function (e) {
-        const torrentData = new Uint8Array(e.target.result);
-        startTorrent(torrentData);
+        try {
+            // Convert the file data to a Uint8Array
+            const torrentData = new Uint8Array(e.target.result);
+
+            // Validate the torrent data
+            if (torrentData.length === 0) {
+                throw new Error('The .torrent file is empty or invalid.');
+            }
+
+            // Start the torrent
+            startTorrent(torrentData);
+        } catch (err) {
+            console.error('Error reading .torrent file:', err);
+            alert('Error reading .torrent file. Please upload a valid file.');
+        }
     };
+
+    reader.onerror = function (err) {
+        console.error('FileReader error:', err);
+        alert('Error reading the file. Please try again.');
+    };
+
+    // Read the file as an ArrayBuffer
     reader.readAsArrayBuffer(file);
 });
 
