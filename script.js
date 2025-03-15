@@ -29,7 +29,11 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
+        // Debugging: Log the torrent ID
+        console.log('Starting torrent:', torrentId);
+
         client.add(torrentId, { announce: trackers }, torrent => {
+            console.log('Torrent added successfully:', torrent);
             displayFiles(torrent);
             updateDownloadProgress(torrent);
 
@@ -206,6 +210,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Debugging: Log the file being streamed
         console.log('Streaming file:', file.name);
+
+        // Check if the file is ready for streaming
+        if (!file.ready) {
+            console.error('File is not ready for streaming:', file.name);
+            alert('File is not ready for streaming. Please wait for the download to complete.');
+            return;
+        }
 
         // Render the file to the video element
         file.renderTo(videoElement, { controls: true }, err => {
