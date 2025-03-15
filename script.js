@@ -182,15 +182,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Stream File
     function streamFile(file) {
-        const videoPlayerContainer = document.getElementById('videoPlayer');
+        const videoPlayer = document.getElementById('videoPlayer');
         const unmuteButton = document.getElementById('unmuteButton');
-        videoPlayerContainer.innerHTML = ''; // Clear previous player
+
+        // Clear previous video source
+        videoPlayer.innerHTML = '';
 
         // Create a new video element
         const videoElement = document.createElement('video');
         videoElement.controls = true; // Add controls to the video element
         videoElement.style.width = '100%'; // Make the video responsive
-        videoPlayerContainer.appendChild(videoElement);
+        videoPlayer.appendChild(videoElement);
 
         // Render the file to the video element
         file.renderTo(videoElement, { controls: true }, err => {
@@ -200,23 +202,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
-            // Initialize Plyr
-            player = new Plyr(videoElement, {
-                controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen']
-            });
-
             // Show unmute button
             unmuteButton.style.display = 'block';
             unmuteButton.onclick = () => {
-                player.muted = false;
+                videoElement.muted = false;
                 unmuteButton.style.display = 'none';
             };
-
-            // Handle Plyr errors
-            player.on('error', err => {
-                console.error('Plyr error:', err);
-                alert('Error initializing video player. Please try again.');
-            });
         });
     }
 
