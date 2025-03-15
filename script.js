@@ -79,6 +79,9 @@ document.getElementById('torrentFile').addEventListener('change', function (even
                 throw new Error('The .torrent file is empty or invalid.');
             }
 
+            // Debugging: Log the torrent data
+            console.log('Torrent data:', torrentData);
+
             // Start the torrent
             startTorrent(torrentData);
         } catch (err) {
