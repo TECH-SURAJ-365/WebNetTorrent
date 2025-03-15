@@ -138,7 +138,7 @@ function streamFile(file) {
     const unmuteButton = document.getElementById('unmuteButton');
     videoPlayerContainer.innerHTML = ''; // Clear previous player
 
-    // Create a video element
+    // Create a new video element
     const videoElement = document.createElement('video');
     videoElement.controls = true; // Add controls to the video element
     videoElement.style.width = '100%'; // Make the video responsive
