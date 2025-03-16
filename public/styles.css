@@ -1,0 +1,205 @@
+/* General Styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #0d0d0d; /* Dark background */
+    color: #ffffff; /* White text for contrast */
+    margin: 0;
+    padding: 0;
+    overflow: auto; /* Enable scrolling */
+}
+
+.container {
+    max-width: 900px;
+    margin: 50px auto;
+    padding: 30px;
+    position: relative; /* Ensure proper layering with the background */
+    z-index: 2; /* Place content above background */
+}
+
+.card {
+    border: none;
+    border-radius: 10px;
+    background-color: #1a1a1a; /* Dark background for cards */
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Subtle shadow */
+}
+
+.card-body {
+    padding: 25px;
+}
+
+.list-group-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background-color: #333; /* Dark background for list items */
+    border: none;
+    color: #ffffff; /* White text */
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.list-group-item button {
+    margin-left: 10px;
+}
+
+#videoPlayer {
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #000;
+}
+
+.progress {
+    height: 12px;
+    margin-bottom: 20px;
+    background-color: #333; /* Dark background for progress bar */
+    border-radius: 5px;
+}
+
+.progress-bar {
+    background-color: #ffffff; /* White progress bar */
+    border-radius: 5px;
+}
+
+#unmuteButton {
+    display: none;
+    margin-top: 10px;
+}
+
+.input-group {
+    margin-bottom: 15px;
+}
+
+.btn-primary {
+    background-color: #007bff; /* Primary blue button */
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+.btn-secondary {
+    background-color: #6c757d; /* Gray button */
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268; /* Darker gray on hover */
+}
+
+/* Header Styles */
+.text-center {
+    text-align: center;
+}
+
+.display-4 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #000000; /* Black text */
+}
+
+.lead {
+    font-size: 1.25rem;
+    color: #ffffff; /* White text for subtitle */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Text shadow for better visibility */
+}
+
+/* File List Text */
+#fileList {
+    color: #ffffff; /* White text for file list */
+}
+
+#fileList .list-group-item {
+    color: #ffffff; /* White text for file list items */
+}
+
+/* Progress Text */
+#progressText {
+    color: #ffffff; /* White text for progress */
+    font-size: 1rem; /* Ensure text size is visible */
+}
+
+/* Input Text */
+#magnetLink, #torrentFile {
+    color: #ffffff; /* White text for input fields */
+    background-color: #333; /* Dark background for input fields */
+    border: 1px solid #ffffff; /* White border for input fields */
+    border-radius: 5px;
+    padding: 10px;
+}
+
+#magnetLink::placeholder, #torrentFile::placeholder {
+    color: #555; /* Dark gray placeholder text */
+}
+
+/* Animated Background */
+.background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1; /* Place background behind content */
+    overflow: hidden; /* Hide overflow to ensure smooth animation */
+    background: linear-gradient(45deg, #ff0000, #ff9900, #ffff00, #33cc33, #3399ff, #cc33ff);
+    background-size: 600% 600%;
+    animation: rainbowBackground 20s ease infinite;
+}
+
+@keyframes rainbowBackground {
+    0% {
+        background-position: 0% 50%;
+    }
+    10% {
+        background-position: 10% 50%;
+    }
+    20% {
+        background-position: 20% 50%;
+    }
+    30% {
+        background-position: 30% 50%;
+    }
+    40% {
+        background-position: 40% 50%;
+    }
+    50% {
+        background-position: 50% 50%;
+    }
+    60% {
+        background-position: 60% 50%;
+    }
+    70% {
+        background-position: 70% 50%;
+    }
+    80% {
+        background-position: 80% 50%;
+    }
+    90% {
+        background-position: 90% 50%;
+    }
+    100% {
+        background-position: 100% 50%;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+
+    .display-4 {
+        font-size: 2rem;
+    }
+
+    .lead {
+        font-size: 1rem;
+    }
+}

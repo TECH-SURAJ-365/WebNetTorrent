@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1795054473499580"
+     crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebNetTorrent</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="text-center mb-5">
+            <h1 class="display-4 text-black">WebNetTorrent</h1>
+            <p class="lead">Stream & Download Your Torrent for Free</p>
+        </div>
+
+        <!-- Input Section -->
+        <div class="card shadow-sm mb-4" id="inputSection">
+            <div class="card-body">
+                <div class="input-group mb-3">
+                    <input type="text" id="magnetLink" class="form-control" placeholder="Paste magnet link here">
+                    <button id="startMagnetButton" class="btn btn-primary">
+                        <i class="fas fa-play"></i> Start Torrent
+                    </button>
+                </div>
+                <div class="input-group">
+                    <input type="file" id="torrentFile" class="form-control" accept=".torrent">
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Section -->
+        <div class="card shadow-sm mb-4" id="progressSection" style="display: none;">
+            <div class="card-body">
+                <div id="progressText" class="mb-2">0 MB of 0 MB — 0 seconds remaining</div>
+                <div class="progress">
+                    <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- File List Section -->
+        <div class="card shadow-sm mb-4" id="fileListSection" style="display: none;">
+            <div class="card-body">
+                <ul id="fileList" class="list-group"></ul>
+            </div>
+        </div>
+
+        <!-- Video Player Section -->
+        <div class="card shadow-sm" id="videoPlayerSection" style="display: none;">
+            <div class="card-body">
+                <video id="videoPlayer" controls style="width: 100%;"></video>
+                <button id="unmuteButton" class="btn btn-secondary mt-3" style="display: none;">
+                    <i class="fas fa-volume-mute"></i> Tap to Unmute
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Animated Background -->
+    <div class="background">
+        <div class="background-layer"></div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <!-- WebTorrent -->
+    <script src="https://cdn.jsdelivr.net/npm/webtorrent@latest/webtorrent.min.js"></script>
+    <!-- Custom JS -->
+    <script src="script.js"></script>
+
+    <script>
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            section.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        document.getElementById('startMagnetButton').addEventListener('click', function() {
+            // Display the progress section when the magnet link is added
+            document.getElementById('progressSection').style.display = 'block';
+            scrollToSection('progressSection');
+
+            // Simulate download progress
+            setTimeout(function() {
+                document.getElementById('progressBar').style.width = '100%';
+                document.getElementById('progressText').textContent = 'Download complete';
+
+                // Display the file list section when the download is complete
+                document.getElementById('fileListSection').style.display = 'block';
+                scrollToSection('fileListSection');
+            }, 3000); // Simulated delay for the download
+        });
+
+        document.getElementById('torrentFile').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (!file || !file.name.endsWith('.torrent')) {
+                return alert('Please upload a valid .torrent file.');
+            }
+
+            console.log('Selected file:', file);
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const torrentData = new Uint8Array(e.target.result);
+                console.log('Read torrent file:', torrentData);
+                startTorrent(torrentData);
+            };
+            reader.onerror = function(e) {
+                console.error('Error reading torrent file:', e);
+                alert('Error reading torrent file. Please try again.');
+            };
+            reader.readAsArrayBuffer(file);
+        });
+
+        document.getElementById('fileListSection').addEventListener('click', function() {
+            // Display the video player section when the stream button is clicked
+            document.getElementById('videoPlayerSection').style.display = 'block';
+            scrollToSection('videoPlayerSection');
+        });
+    </script>
+</body>
+</html>
