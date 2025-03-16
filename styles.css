@@ -105,6 +105,12 @@ body {
     color: #000000; /* Black text */
 }
 
+.lead {
+    font-size: 1.25rem;
+    color: #ffffff; /* White text for subtitle */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Text shadow for better visibility */
+}
+
 /* File List Text */
 #fileList {
     color: #ffffff; /* White text for file list */
@@ -151,11 +157,35 @@ body {
     0% {
         background-position: 0% 50%;
     }
+    10% {
+        background-position: 10% 50%;
+    }
+    20% {
+        background-position: 20% 50%;
+    }
+    30% {
+        background-position: 30% 50%;
+    }
+    40% {
+        background-position: 40% 50%;
+    }
     50% {
-        background-position: 100% 50%;
+        background-position: 50% 50%;
+    }
+    60% {
+        background-position: 60% 50%;
+    }
+    70% {
+        background-position: 70% 50%;
+    }
+    80% {
+        background-position: 80% 50%;
+    }
+    90% {
+        background-position: 90% 50%;
     }
     100% {
-        background-position: 0% 50%;
+        background-position: 100% 50%;
     }
 }
 
