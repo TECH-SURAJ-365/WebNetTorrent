@@ -135,6 +135,13 @@ body {
     color: #a0a0a0; /* Light gray placeholder text */
 }
 
+/* Heading Styles */
+h2 {
+    color: #ffffff; /* White text for contrast */
+    font-size: 1.5rem; /* Adjust font size if needed */
+    margin-bottom: 10px; /* Add spacing below the heading */
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .container {
