@@ -137,7 +137,7 @@ body {
 
 /* Heading Styles */
 h2 {
-    color: #ffffff; /* White text for contrast */
+    color: #00ff00; /* Bright green for headings */
     font-size: 1.5rem; /* Adjust font size if needed */
     margin-bottom: 10px; /* Add spacing below the heading */
 }
