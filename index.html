@@ -14,7 +14,7 @@
 <body>
     <div class="container">
         <!-- Header -->
-        <div class="text-center mb-4">
+        <div class="text-center mb-5">
             <h1 class="display-4">WebNetTorrent</h1>
             <p class="lead">Stream and download torrents directly in your browser.</p>
         </div>
@@ -22,13 +22,13 @@
         <!-- Input Section -->
         <div class="card shadow-sm mb-4">
             <div class="card-body">
-                <div class="input-group">
+                <div class="input-group mb-3">
                     <input type="text" id="magnetLink" class="form-control" placeholder="Paste magnet link here">
                     <button id="startMagnetButton" class="btn btn-primary">
                         <i class="fas fa-play"></i> Start Torrent
                     </button>
                 </div>
-                <div class="mt-3">
+                <div class="input-group">
                     <input type="file" id="torrentFile" class="form-control" accept=".torrent">
                 </div>
             </div>
@@ -38,7 +38,7 @@
         <div class="card shadow-sm mb-4">
             <div class="card-body">
                 <h2 class="h4 mb-3">Download Progress</h2>
-                <div id="progressText" class="mb-2"></div>
+                <div id="progressText" class="mb-2">0 MB of 0 MB — 0 seconds remaining</div>
                 <div class="progress">
                     <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%;"></div>
                 </div>
