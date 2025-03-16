@@ -112,9 +112,27 @@ body {
     color: #ffffff; /* White text for file list */
 }
 
+#fileList .list-group-item {
+    color: #ffffff; /* White text for file list items */
+}
+
 /* Progress Text */
 #progressText {
     color: #ffffff; /* White text for progress */
+    font-size: 1rem; /* Ensure text size is visible */
+}
+
+/* Input Text */
+#magnetLink, #torrentFile {
+    color: #ffffff; /* White text for input fields */
+    background-color: #3a3a5a; /* Dark background for input fields */
+    border: 1px solid #007bff; /* Blue border for input fields */
+    border-radius: 5px;
+    padding: 10px;
+}
+
+#magnetLink::placeholder, #torrentFile::placeholder {
+    color: #a0a0a0; /* Light gray placeholder text */
 }
 
 /* Responsive Design */
