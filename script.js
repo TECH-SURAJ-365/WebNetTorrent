@@ -2,7 +2,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const client = new WebTorrent();
     let player;
 
-    // Add more reliable trackers
     const trackers = [
         'wss://tracker.btorrent.xyz',
         'wss://tracker.openwebtorrent.com',
@@ -13,14 +12,12 @@ document.addEventListener('DOMContentLoaded', function () {
         'udp://tracker.leechers-paradise.org:6969/announce'
     ];
 
-    // Function to start torrent with additional trackers
     function startTorrent(torrentId) {
         if (!torrentId) {
             alert('Invalid torrent identifier. Please provide a valid .torrent file or magnet link.');
             return;
         }
 
-        // Check if torrentId is a valid magnet link or Uint8Array
         if (typeof torrentId === 'string' && !isValidMagnetLink(torrentId)) {
             alert('Invalid magnet link. Please provide a valid magnet link.');
             return;
@@ -29,18 +26,13 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        // Debugging: Log the torrent ID
-        console.log('Starting torrent:', torrentId);
-
         client.add(torrentId, { announce: trackers }, torrent => {
-            console.log('Torrent added successfully:', torrent);
             displayFiles(torrent);
             updateDownloadProgress(torrent);
 
-            // Prioritize downloading for non-media files
             torrent.files.forEach(file => {
                 if (!isMediaFile(file.name)) {
-                    file.priority = 1; // High priority for non-media files
+                    file.priority = 1;
                 }
             });
         }).on('error', err => {
@@ -49,18 +41,15 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Check if a magnet link is valid
     function isValidMagnetLink(link) {
         return link.startsWith('magnet:?');
     }
 
-    // Check if a file is a media file
     function isMediaFile(filename) {
         const mediaExtensions = ['.mp4', '.mkv', '.mp3', '.webm'];
         return mediaExtensions.some(ext => filename.endsWith(ext));
     }
 
-    // Handle Magnet Link
     document.getElementById('startMagnetButton').addEventListener('click', function () {
         const magnetLink = document.getElementById('magnetLink').value;
         if (!isValidMagnetLink(magnetLink)) {
@@ -69,7 +58,6 @@ document.addEventListener('DOMContentLoaded', function () {
         startTorrent(magnetLink);
     });
 
-    // Handle Torrent File Upload
     document.getElementById('torrentFile').addEventListener('change', function (event) {
         const file = event.target.files[0];
         if (!file || !file.name.endsWith('.torrent')) {
@@ -78,69 +66,35 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const reader = new FileReader();
         reader.onload = function (e) {
-            try {
-                // Convert the file data to a Uint8Array
-                const torrentData = new Uint8Array(e.target.result);
-
-                // Debugging: Log the torrent data
-                console.log('Torrent data:', torrentData);
-
-                // Validate the torrent data
-                if (torrentData.length === 0) {
-                    throw new Error('The .torrent file is empty or invalid.');
-                }
-
-                // Start the torrent
-                startTorrent(torrentData);
-            } catch (err) {
-                console.error('Error reading .torrent file:', err);
-                alert('Error reading .torrent file. Please upload a valid file.');
-            }
+            const torrentData = new Uint8Array(e.target.result);
+            startTorrent(torrentData);
         };
-
-        reader.onerror = function (err) {
-            console.error('FileReader error:', err);
-            alert('Error reading the file. Please try again.');
-        };
-
-        // Read the file as an ArrayBuffer
         reader.readAsArrayBuffer(file);
     });
 
-    // Display Files in the Torrent
     function displayFiles(torrent) {
         const fileList = document.getElementById('fileList');
-        fileList.innerHTML = ''; // Clear previous list
+        fileList.innerHTML = '';
 
         torrent.files.forEach(file => {
             const listItem = document.createElement('li');
             listItem.className = 'list-group-item';
 
-            // File name
             const fileName = document.createElement('span');
             fileName.textContent = file.name;
             listItem.appendChild(fileName);
 
-            // Download button
             const downloadButton = document.createElement('button');
             downloadButton.className = 'btn btn-primary btn-sm';
             downloadButton.innerHTML = '<i class="fas fa-download"></i> Download';
             downloadButton.onclick = () => downloadFile(file);
             listItem.appendChild(downloadButton);
 
-            // Stream button for media files
             if (isMediaFile(file.name)) {
                 const streamButton = document.createElement('button');
                 streamButton.className = 'btn btn-success btn-sm';
                 streamButton.innerHTML = '<i class="fas fa-play"></i> Stream';
-                streamButton.onclick = () => {
-                    if (file.downloaded === file.length) {
-                        streamFile(file);
-                    } else {
-                        console.error('File is not fully downloaded:', file.name);
-                        alert('File is not fully downloaded. Please wait for the download to complete.');
-                    }
-                };
+                streamButton.onclick = () => streamFile(file);
                 listItem.appendChild(streamButton);
             }
 
@@ -148,43 +102,35 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Update Download Progress
     function updateDownloadProgress(torrent) {
         const progressBar = document.getElementById('progressBar');
         const progressText = document.getElementById('progressText');
 
-        // Update progress every second
         setInterval(() => {
             const percent = (torrent.progress * 100).toFixed(2);
-            progressBar.style.width = `${percent}%`; // Update progress bar width
+            progressBar.style.width = `${percent}%`;
 
             const downloaded = (torrent.downloaded / 1024 / 1024).toFixed(2);
             const total = (torrent.length / 1024 / 1024).toFixed(2);
             const timeRemaining = torrent.timeRemaining / 1000;
             progressText.textContent = `${downloaded} MB of ${total} MB — ${timeRemaining.toFixed(2)} seconds remaining.`;
-        }, 1000); // Update every second
+        }, 1000);
     }
 
-    // Download File
     function downloadFile(file) {
-        const blobStream = file.createReadStream(); // Create a readable stream
+        const blobStream = file.createReadStream();
         const chunks = [];
 
         blobStream.on('data', chunk => {
-            chunks.push(chunk); // Collect chunks of the file
+            chunks.push(chunk);
         });
 
         blobStream.on('end', () => {
-            // Combine chunks into a single Blob
             const blob = new Blob(chunks, { type: file.type });
-
-            // Create a download link
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
             link.download = file.name;
             link.click();
-
-            // Clean up the object URL
             URL.revokeObjectURL(link.href);
         });
 
@@ -194,59 +140,46 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Stream File
     function streamFile(file) {
         const videoPlayer = document.getElementById('videoPlayer');
         const unmuteButton = document.getElementById('unmuteButton');
 
-        // Clear previous video source
         videoPlayer.innerHTML = '';
 
-        // Create a new video element
         const videoElement = document.createElement('video');
-        videoElement.controls = true; // Add controls to the video element
-        videoElement.style.width = '100%'; // Make the video responsive
+        videoElement.controls = true;
+        videoElement.style.width = '100%';
         videoPlayer.appendChild(videoElement);
 
-        // Debugging: Log the file being streamed
-        console.log('Streaming file:', file.name);
+        const mediaSource = new MediaSource();
+        videoElement.src = URL.createObjectURL(mediaSource);
 
-        // Create a readable stream from the file
-        const stream = file.createReadStream();
-        const chunks = [];
+        mediaSource.addEventListener('sourceopen', () => {
+            const sourceBuffer = mediaSource.addSourceBuffer(`video/${file.name.endsWith('.mp4') ? 'mp4' : 'webm'}`);
+            const stream = file.createReadStream();
 
-        // Collect chunks of the file
-        stream.on('data', chunk => {
-            chunks.push(chunk);
-        });
+            stream.on('data', chunk => {
+                if (!sourceBuffer.updating) {
+                    sourceBuffer.appendBuffer(chunk);
+                }
+            });
 
-        // When the stream ends, create a Blob and set it as the video source
-        stream.on('end', () => {
-            const blob = new Blob(chunks, { type: file.type });
-            const objectURL = URL.createObjectURL(blob);
+            stream.on('end', () => {
+                mediaSource.endOfStream();
+                unmuteButton.style.display = 'block';
+                unmuteButton.onclick = () => {
+                    videoElement.muted = false;
+                    unmuteButton.style.display = 'none';
+                };
+            });
 
-            // Set the video source
-            videoElement.src = objectURL;
-
-            // Show unmute button
-            unmuteButton.style.display = 'block';
-            unmuteButton.onclick = () => {
-                videoElement.muted = false;
-                unmuteButton.style.display = 'none';
-            };
-
-            // Debugging: Log successful rendering
-            console.log('File rendered successfully:', file.name);
-        });
-
-        // Handle stream errors
-        stream.on('error', err => {
-            console.error('Error streaming file:', err);
-            alert('Error streaming file. Please try again.');
+            stream.on('error', err => {
+                console.error('Error streaming file:', err);
+                alert('Error streaming file. Please try again.');
+            });
         });
     }
 
-    // Debugging
     client.on('error', err => {
         console.error('WebTorrent error:', err);
     });

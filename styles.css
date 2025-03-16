@@ -1,18 +1,24 @@
 /* General Styles */
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #f8f9fa;
-    color: #333;
+    background-color: #1e1e2f; /* Dark background */
+    color: #ffffff; /* White text for contrast */
+    margin: 0;
+    padding: 0;
 }
 
 .container {
     max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
 }
 
 .card {
     border: none;
     border-radius: 10px;
+    background-color: #2a2a40; /* Slightly lighter dark background */
     margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .card-body {
@@ -24,6 +30,11 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 10px 15px;
+    background-color: #3a3a5a; /* Darker background for list items */
+    border: none;
+    color: #ffffff; /* White text for contrast */
+    margin-bottom: 10px;
+    border-radius: 5px;
 }
 
 .list-group-item button {
@@ -33,19 +44,24 @@ body {
 #videoPlayer {
     border-radius: 10px;
     overflow: hidden;
+    background-color: #000;
 }
 
 .progress {
     height: 10px;
     margin-bottom: 20px;
+    background-color: #3a3a5a; /* Darker background for progress bar */
+    border-radius: 5px;
 }
 
 .progress-bar {
-    background-color: #007bff;
+    background-color: #007bff; /* Blue progress bar */
+    border-radius: 5px;
 }
 
 #unmuteButton {
-    display: none; /* Hidden by default */
+    display: none;
+    margin-top: 10px;
 }
 
 .input-group {
@@ -53,19 +69,65 @@ body {
 }
 
 .btn-primary {
-    background-color: #007bff;
+    background-color: #007bff; /* Blue button */
     border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
 }
 
 .btn-primary:hover {
-    background-color: #0056b3;
+    background-color: #0056b3; /* Darker blue on hover */
 }
 
 .btn-secondary {
-    background-color: #6c757d;
+    background-color: #6c757d; /* Gray button */
     border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
 }
 
 .btn-secondary:hover {
-    background-color: #5a6268;
+    background-color: #5a6268; /* Darker gray on hover */
+}
+
+/* Header Styles */
+.text-center {
+    text-align: center;
+}
+
+.display-4 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #ffffff; /* White text for contrast */
+}
+
+.lead {
+    font-size: 1.25rem;
+    color: #a0a0a0; /* Light gray for subtitle */
+}
+
+/* File List Text */
+#fileList {
+    color: #ffffff; /* White text for file list */
+}
+
+/* Progress Text */
+#progressText {
+    color: #ffffff; /* White text for progress */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+
+    .display-4 {
+        font-size: 2rem;
+    }
+
+    .lead {
+        font-size: 1rem;
+    }
 }
