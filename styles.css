@@ -1,28 +1,31 @@
 /* General Styles */
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #1e1e2f; /* Dark background */
+    font-family: 'Roboto', sans-serif;
+    background-color: #0d0d0d; /* Dark background */
     color: #ffffff; /* White text for contrast */
     margin: 0;
     padding: 0;
+    overflow: auto; /* Enable scrolling */
 }
 
 .container {
-    max-width: 800px;
-    margin: 40px auto;
-    padding: 20px;
+    max-width: 900px;
+    margin: 50px auto;
+    padding: 30px;
+    position: relative; /* Ensure proper layering with the background */
+    z-index: 2; /* Place content above background */
 }
 
 .card {
     border: none;
     border-radius: 10px;
-    background-color: #2a2a40; /* Slightly lighter dark background */
+    background-color: #1a1a1a; /* Dark background for cards */
     margin-bottom: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Subtle shadow */
 }
 
 .card-body {
-    padding: 20px;
+    padding: 25px;
 }
 
 .list-group-item {
@@ -30,9 +33,9 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 10px 15px;
-    background-color: #3a3a5a; /* Darker background for list items */
+    background-color: #333; /* Dark background for list items */
     border: none;
-    color: #ffffff; /* White text for contrast */
+    color: #ffffff; /* White text */
     margin-bottom: 10px;
     border-radius: 5px;
 }
@@ -48,14 +51,14 @@ body {
 }
 
 .progress {
-    height: 10px;
+    height: 12px;
     margin-bottom: 20px;
-    background-color: #3a3a5a; /* Darker background for progress bar */
+    background-color: #333; /* Dark background for progress bar */
     border-radius: 5px;
 }
 
 .progress-bar {
-    background-color: #007bff; /* Blue progress bar */
+    background-color: #ffffff; /* White progress bar */
     border-radius: 5px;
 }
 
@@ -65,11 +68,11 @@ body {
 }
 
 .input-group {
-    margin-bottom: 10px;
+    margin-bottom: 15px;
 }
 
 .btn-primary {
-    background-color: #007bff; /* Blue button */
+    background-color: #007bff; /* Primary blue button */
     border: none;
     border-radius: 5px;
     padding: 10px 20px;
@@ -99,12 +102,7 @@ body {
     font-size: 2.5rem;
     font-weight: bold;
     margin-bottom: 10px;
-    color: #ffffff; /* White text for contrast */
-}
-
-.lead {
-    font-size: 1.25rem;
-    color: #a0a0a0; /* Light gray for subtitle */
+    color: #000000; /* Black text */
 }
 
 /* File List Text */
@@ -125,21 +123,40 @@ body {
 /* Input Text */
 #magnetLink, #torrentFile {
     color: #ffffff; /* White text for input fields */
-    background-color: #3a3a5a; /* Dark background for input fields */
-    border: 1px solid #007bff; /* Blue border for input fields */
+    background-color: #333; /* Dark background for input fields */
+    border: 1px solid #ffffff; /* White border for input fields */
     border-radius: 5px;
     padding: 10px;
 }
 
 #magnetLink::placeholder, #torrentFile::placeholder {
-    color: #a0a0a0; /* Light gray placeholder text */
+    color: #555; /* Dark gray placeholder text */
 }
 
-/* Heading Styles */
-h2 {
-    color: #00ff00; /* Bright green for headings */
-    font-size: 1.5rem; /* Adjust font size if needed */
-    margin-bottom: 10px; /* Add spacing below the heading */
+/* Animated Background */
+.background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1; /* Place background behind content */
+    overflow: hidden; /* Hide overflow to ensure smooth animation */
+    background: linear-gradient(45deg, #ff0000, #ff9900, #ffff00, #33cc33, #3399ff, #cc33ff);
+    background-size: 600% 600%;
+    animation: rainbowBackground 20s ease infinite;
+}
+
+@keyframes rainbowBackground {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
 }
 
 /* Responsive Design */
