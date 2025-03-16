@@ -26,6 +26,8 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
+        console.log('Adding torrent:', torrentId);
+        
         client.add(torrentId, { announce: trackers }, torrent => {
             displayFiles(torrent);
             updateDownloadProgress(torrent);
@@ -64,10 +66,17 @@ document.addEventListener('DOMContentLoaded', function () {
             return alert('Please upload a valid .torrent file.');
         }
 
+        console.log('Selected file:', file);
+
         const reader = new FileReader();
         reader.onload = function (e) {
             const torrentData = new Uint8Array(e.target.result);
+            console.log('Read torrent file:', torrentData);
             startTorrent(torrentData);
+        };
+        reader.onerror = function (e) {
+            console.error('Error reading torrent file:', e);
+            alert('Error reading torrent file. Please try again.');
         };
         reader.readAsArrayBuffer(file);
     });
