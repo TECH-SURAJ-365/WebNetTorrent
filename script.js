@@ -1,40 +1,51 @@
 document.addEventListener('DOMContentLoaded', function () {
     const client = new WebTorrent();
 
-    document.getElementById('startMagnetButton').addEventListener('click', function () {
+    document.getElementById('startMagnetButton').addEventListener('click', async function () {
         const magnetLink = document.getElementById('magnetLink').value;
         if (magnetLink) {
             const existingTorrent = client.get(magnetLink);
             if (existingTorrent) {
-                client.remove(existingTorrent.infoHash);
-                console.log('Removed existing torrent:', existingTorrent.infoHash);
+                await removeTorrent(existingTorrent);
             }
-            try {
-                client.add(magnetLink, onTorrent);
-            } catch (error) {
-                console.error('Error adding magnet link:', error);
-                alert('Failed to add magnet link.');
-            }
+            addTorrent(magnetLink);
         }
     });
 
-    document.getElementById('startTorrentButton').addEventListener('click', function () {
+    document.getElementById('startTorrentButton').addEventListener('click', async function () {
         const fileInput = document.getElementById('torrentFile');
         if (fileInput.files.length > 0) {
             const file = fileInput.files[0];
             const existingTorrent = client.get(file);
             if (existingTorrent) {
-                client.remove(existingTorrent.infoHash);
-                console.log('Removed existing torrent:', existingTorrent.infoHash);
+                await removeTorrent(existingTorrent);
             }
-            try {
-                client.add(file, onTorrent);
-            } catch (error) {
-                console.error('Error adding torrent file:', error);
-                alert('Failed to add torrent file.');
-            }
+            addTorrent(file);
         }
     });
+
+    function removeTorrent(torrent) {
+        return new Promise((resolve, reject) => {
+            client.remove(torrent.infoHash, (err) => {
+                if (err) {
+                    console.error('Error removing torrent:', err);
+                    reject(err);
+                } else {
+                    console.log('Removed existing torrent:', torrent.infoHash);
+                    resolve();
+                }
+            });
+        });
+    }
+
+    function addTorrent(torrentId) {
+        try {
+            client.add(torrentId, onTorrent);
+        } catch (error) {
+            console.error('Error adding torrent:', error);
+            alert('Failed to add torrent.');
+        }
+    }
 
     function onTorrent(torrent) {
         const progressSection = document.getElementById('progressSection');
@@ -70,13 +81,21 @@ document.addEventListener('DOMContentLoaded', function () {
             downloadButton.className = 'btn btn-primary btn-sm';
             downloadButton.innerHTML = '<i class="fas fa-download"></i> Download';
             downloadButton.onclick = () => {
-                file.getBlobURL((err, url) => {
-                    if (err) throw err;
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = file.name;
-                    a.click();
-                });
+                fetch(file.getBlobURL(), { mode: 'no-cors' })
+                    .then(response => {
+                        if (!response.ok) throw new Error('Network response was not ok');
+                        return response.blob();
+                    })
+                    .then(blob => {
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = file.name;
+                        a.click();
+                    })
+                    .catch(error => {
+                        console.error('Error fetching file:', error);
+                    });
             };
             listItem.appendChild(downloadButton);
 
