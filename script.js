@@ -4,7 +4,17 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('startMagnetButton').addEventListener('click', function () {
         const magnetLink = document.getElementById('magnetLink').value;
         if (magnetLink) {
-            client.add(magnetLink, onTorrent);
+            const existingTorrent = client.get(magnetLink);
+            if (existingTorrent) {
+                client.remove(existingTorrent.infoHash);
+                console.log('Removed existing torrent:', existingTorrent.infoHash);
+            }
+            try {
+                client.add(magnetLink, onTorrent);
+            } catch (error) {
+                console.error('Error adding magnet link:', error);
+                alert('Failed to add magnet link.');
+            }
         }
     });
 
@@ -12,7 +22,17 @@ document.addEventListener('DOMContentLoaded', function () {
         const fileInput = document.getElementById('torrentFile');
         if (fileInput.files.length > 0) {
             const file = fileInput.files[0];
-            client.add(file, onTorrent);
+            const existingTorrent = client.get(file);
+            if (existingTorrent) {
+                client.remove(existingTorrent.infoHash);
+                console.log('Removed existing torrent:', existingTorrent.infoHash);
+            }
+            try {
+                client.add(file, onTorrent);
+            } catch (error) {
+                console.error('Error adding torrent file:', error);
+                alert('Failed to add torrent file.');
+            }
         }
     });
 
@@ -28,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
         torrent.on('download', () => {
             const percent = Math.round(torrent.progress * 100 * 100) / 100;
             progressBar.style.width = percent + '%';
-            progressText.textContent = `${(torrent.downloaded / (1024 * 1024)).toFixed(2)} MB of ${(torrent.length / (1024 * 1024)).toFixed(2)} MB — ${torrent.timeRemaining / 1000} seconds remaining`;
+            progressText.textContent = `${(torrent.downloaded / (1024 * 1024)).toFixed(2)} MB of ${(torrent.length / (1024 * 1024)).toFixed(2)} MB — ${Math.round(torrent.timeRemaining / 1000)} seconds remaining`;
         });
 
         torrent.on('done', () => {
