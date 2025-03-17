@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebNetTorrent</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="text-center mb-5">
+            <h1 class="display-4 text-black">WebNetTorrent</h1>
+            <p class="lead">Stream & Download Your Torrent for Free</p>
+        </div>
+        <div class="card shadow-sm mb-4" id="inputSection">
+            <div class="card-body">
+                <div class="input-group mb-3">
+                    <input type="text" id="magnetLink" class="form-control" placeholder="Paste magnet link here">
+                    <button id="startMagnetButton" class="btn btn-primary">
+                        <i class="fas fa-play"></i> Start Torrent
+                    </button>
+                </div>
+                <div class="input-group">
+                    <input type="file" id="torrentFile" class="form-control" accept=".torrent">
+                </div>
+            </div>
+        </div>
+        <div class="card shadow-sm mb-4" id="progressSection" style="display: none;">
+            <div class="card-body">
+                <div id="progressText" class="mb-2">0 MB of 0 MB — 0 seconds remaining</div>
+                <div class="progress">
+                    <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%;"></div>
+                </div>
+            </div>
+        </div>
+        <div class="card shadow-sm mb-4" id="fileListSection" style="display: none;">
+            <div class="card-body">
+                <ul id="fileList" class="list-group"></ul>
+            </div>
+        </div>
+        <div class="card shadow-sm" id="videoPlayerSection" style="display: none;">
+            <div class="card-body">
+                <video id="videoPlayer" controls style="width: 100%;"></video>
+                <button id="unmuteButton" class="btn btn-secondary mt-3" style="display: none;">
+                    <i class="fas fa-volume-mute"></i> Tap to Unmute
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="background">
+        <div class="background-layer"></div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
