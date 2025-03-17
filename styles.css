@@ -1,6 +1,6 @@
 body {
     font-family: 'Roboto', sans-serif;
-    background-color: #0d0d0d;
+    background-color: #282c34;
     color: #ffffff;
     margin: 0;
     padding: 0;
@@ -8,9 +8,9 @@ body {
 }
 
 .container {
-    max-width: 900px;
+    max-width: 800px;
     margin: 50px auto;
-    padding: 30px;
+    padding: 20px;
     position: relative;
     z-index: 2;
 }
@@ -18,13 +18,13 @@ body {
 .card {
     border: none;
     border-radius: 10px;
-    background-color: #1a1a1a;
+    background-color: #3a3f47;
     margin-bottom: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }
 
 .card-body {
-    padding: 25px;
+    padding: 20px;
 }
 
 .list-group-item {
@@ -32,7 +32,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 10px 15px;
-    background-color: #333;
+    background-color: #3a3f47;
     border: none;
     color: #ffffff;
     margin-bottom: 10px;
@@ -43,27 +43,16 @@ body {
     margin-left: 10px;
 }
 
-#videoPlayer {
-    border-radius: 10px;
-    overflow: hidden;
-    background-color: #000;
-}
-
 .progress {
     height: 12px;
     margin-bottom: 20px;
-    background-color: #333;
+    background-color: #555;
     border-radius: 5px;
 }
 
 .progress-bar {
-    background-color: #ffffff;
+    background-color: #007bff;
     border-radius: 5px;
-}
-
-#unmuteButton {
-    display: none;
-    margin-top: 10px;
 }
 
 .input-group {
@@ -75,21 +64,11 @@ body {
     border: none;
     border-radius: 5px;
     padding: 10px 20px;
+    color: #ffffff;
 }
 
 .btn-primary:hover {
     background-color: #0056b3;
-}
-
-.btn-secondary {
-    background-color: #6c757d;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-}
-
-.btn-secondary:hover {
-    background-color: #5a6268;
 }
 
 .text-center {
@@ -100,38 +79,34 @@ body {
     font-size: 2.5rem;
     font-weight: bold;
     margin-bottom: 10px;
-    color: #000000;
 }
 
 .lead {
     font-size: 1.25rem;
-    color: #ffffff;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-}
-
-#fileList {
-    color: #ffffff;
 }
 
 #fileList .list-group-item {
-    color: #ffffff;
+    background-color: #3a3f47;
 }
 
 #progressText {
-    color: #ffffff;
     font-size: 1rem;
 }
 
 #magnetLink, #torrentFile {
     color: #ffffff;
-    background-color: #333;
-    border: 1px solid #ffffff;
+    background-color: #555;
+    border: 1px solid #777;
     border-radius: 5px;
     padding: 10px;
 }
 
 #magnetLink::placeholder, #torrentFile::placeholder {
-    color: #555;
+    color: #bbb;
+}
+
+footer {
+    margin-top: 50px;
 }
 
 .background {
