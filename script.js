@@ -59,7 +59,10 @@ document.addEventListener('DOMContentLoaded', function () {
         torrent.on('download', () => {
             const percent = Math.round(torrent.progress * 100 * 100) / 100;
             progressBar.style.width = percent + '%';
-            progressText.textContent = `${(torrent.downloaded / (1024 * 1024)).toFixed(2)} MB of ${(torrent.length / (1024 * 1024)).toFixed(2)} MB — ${Math.round(torrent.timeRemaining / 1000)} seconds remaining`;
+            const downloadedMB = (torrent.downloaded / (1024 * 1024)).toFixed(2);
+            const totalMB = (torrent.length / (1024 * 1024)).toFixed(2);
+            const timeRemaining = (torrent.timeRemaining / 1000).toFixed(2);
+            progressText.textContent = `${downloadedMB} MB of ${totalMB} MB — ${timeRemaining} seconds remaining`;
         });
 
         torrent.on('done', () => {
@@ -81,21 +84,13 @@ document.addEventListener('DOMContentLoaded', function () {
             downloadButton.className = 'btn btn-primary btn-sm';
             downloadButton.innerHTML = '<i class="fas fa-download"></i> Download';
             downloadButton.onclick = () => {
-                fetch(file.getBlobURL(), { mode: 'no-cors' })
-                    .then(response => {
-                        if (!response.ok) throw new Error('Network response was not ok');
-                        return response.blob();
-                    })
-                    .then(blob => {
-                        const url = URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = file.name;
-                        a.click();
-                    })
-                    .catch(error => {
-                        console.error('Error fetching file:', error);
-                    });
+                file.getBlobURL((err, url) => {
+                    if (err) throw err;
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = file.name;
+                    a.click();
+                });
             };
             listItem.appendChild(downloadButton);
 
