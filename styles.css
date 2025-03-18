@@ -91,6 +91,7 @@ body {
 
 #progressText {
     font-size: 1rem;
+    color: #ffffff;  /* Change text color to white */
 }
 
 #magnetLink, #torrentFile {
