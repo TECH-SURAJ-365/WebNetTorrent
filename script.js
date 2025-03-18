@@ -17,6 +17,12 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     function addTorrent(torrentIdOrFile) {
+        // Check if the torrent is already added
+        if (client.get(torrentIdOrFile)) {
+            console.log('Torrent already added:', torrentIdOrFile);
+            return;
+        }
+
         client.add(torrentIdOrFile, function (torrent) {
             const progressSection = document.getElementById('progressSection');
             const progressBar = document.getElementById('progressBar');
