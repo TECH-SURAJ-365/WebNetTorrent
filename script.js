@@ -23,55 +23,74 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        client.add(torrentIdOrFile, function (torrent) {
-            const progressSection = document.getElementById('progressSection');
-            const progressBar = document.getElementById('progressBar');
-            const progressText = document.getElementById('progressText');
-            const fileListSection = document.getElementById('fileListSection');
-            const fileList = document.getElementById('fileList');
+        try {
+            client.add(torrentIdOrFile, function (torrent) {
+                const progressSection = document.getElementById('progressSection');
+                const progressBar = document.getElementById('progressBar');
+                const progressText = document.getElementById('progressText');
+                const fileListSection = document.getElementById('fileListSection');
+                const fileList = document.getElementById('fileList');
 
-            progressSection.style.display = 'block';
+                progressSection.style.display = 'block';
 
-            torrent.on('download', () => {
-                const percent = Math.round(torrent.progress * 100);
-                progressBar.style.width = percent + '%';
-                const downloadedMB = (torrent.downloaded / (1024 * 1024)).toFixed(2);
-                const totalMB = (torrent.length / (1024 * 1024)).toFixed(2);
-                const timeRemaining = (torrent.timeRemaining / 1000).toFixed(2);
-                progressText.textContent = `${downloadedMB} MB of ${totalMB} MB — ${timeRemaining} seconds remaining`;
-            });
+                torrent.on('download', () => {
+                    const percent = Math.round(torrent.progress * 100);
+                    progressBar.style.width = percent + '%';
+                    const downloadedMB = (torrent.downloaded / (1024 * 1024)).toFixed(2);
+                    const totalMB = (torrent.length / (1024 * 1024)).toFixed(2);
+                    const timeRemaining = (torrent.timeRemaining / 1000).toFixed(2);
+                    progressText.textContent = `${downloadedMB} MB of ${totalMB} MB — ${timeRemaining} seconds remaining`;
+                });
 
-            torrent.on('done', () => {
-                progressText.textContent = 'Download complete';
-                progressBar.style.width = '100%';
-            });
+                torrent.on('done', () => {
+                    progressText.textContent = 'Download complete';
+                    progressBar.style.width = '100%';
+                });
 
-            fileListSection.style.display = 'block';
-            fileList.innerHTML = '';
-            torrent.files.forEach(file => {
-                const listItem = document.createElement('li');
-                listItem.className = 'list-group-item';
+                torrent.on('error', (err) => {
+                    console.error('Torrent error:', err);
+                    progressText.textContent = 'Error occurred: ' + err.message;
+                });
 
-                const fileName = document.createElement('span');
-                fileName.textContent = file.name;
-                listItem.appendChild(fileName);
+                torrent.on('noPeers', (announceType) => {
+                    console.warn('No peers found for torrent:', announceType);
+                    progressText.textContent = 'No peers found. Please check the magnet link or torrent file.';
+                });
 
-                const downloadButton = document.createElement('button');
-                downloadButton.className = 'btn btn-primary btn-sm';
-                downloadButton.innerHTML = '<i class="fas fa-download"></i> Download';
-                downloadButton.onclick = () => {
-                    file.getBlobURL((err, url) => {
-                        if (err) throw err;
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = file.name;
-                        a.click();
+                // Handle torrent metadata fetched event
+                torrent.on('metadata', () => {
+                    fileListSection.style.display = 'block';
+                    fileList.innerHTML = '';
+                    torrent.files.forEach(file => {
+                        const listItem = document.createElement('li');
+                        listItem.className = 'list-group-item';
+
+                        const fileName = document.createElement('span');
+                        fileName.textContent = file.name;
+                        listItem.appendChild(fileName);
+
+                        const downloadButton = document.createElement('button');
+                        downloadButton.className = 'btn btn-primary btn-sm';
+                        downloadButton.innerHTML = '<i class="fas fa-download"></i> Download';
+                        downloadButton.onclick = () => {
+                            file.getBlobURL((err, url) => {
+                                if (err) throw err;
+                                const a = document.createElement('a');
+                                a.href = url;
+                                a.download = file.name;
+                                a.click();
+                            });
+                        };
+                        listItem.appendChild(downloadButton);
+
+                        fileList.appendChild(listItem);
                     });
-                };
-                listItem.appendChild(downloadButton);
-
-                fileList.appendChild(listItem);
+                });
             });
-        });
+        } catch (error) {
+            console.error('Failed to add torrent:', error);
+            const progressText = document.getElementById('progressText');
+            progressText.textContent = 'Failed to add torrent: ' + error.message;
+        }
     }
 });
