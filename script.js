@@ -16,6 +16,13 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    function formatTime(seconds) {
+        const h = Math.floor(seconds / 3600);
+        const m = Math.floor((seconds % 3600) / 60);
+        const s = Math.floor(seconds % 60);
+        return `${h}h ${m}m ${s}s`;
+    }
+
     function addTorrent(torrentIdOrFile) {
         // Check if the torrent is already added
         if (client.get(torrentIdOrFile)) {
@@ -38,8 +45,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     progressBar.style.width = percent + '%';
                     const downloadedMB = (torrent.downloaded / (1024 * 1024)).toFixed(2);
                     const totalMB = (torrent.length / (1024 * 1024)).toFixed(2);
-                    const timeRemaining = (torrent.timeRemaining / 1000).toFixed(2);
-                    progressText.textContent = `${downloadedMB} MB of ${totalMB} MB — ${timeRemaining} seconds remaining`;
+                    const timeRemaining = formatTime(torrent.timeRemaining / 1000);
+                    progressText.textContent = `${downloadedMB} MB of ${totalMB} MB — ${timeRemaining} remaining`;
                 });
 
                 torrent.on('done', () => {
