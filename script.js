@@ -45,6 +45,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 torrent.on('done', () => {
                     progressText.textContent = 'Download complete';
                     progressBar.style.width = '100%';
+
+                    // Enable download buttons
+                    const downloadButtons = document.querySelectorAll('.download-button');
+                    downloadButtons.forEach(button => {
+                        button.disabled = false;
+                    });
                 });
 
                 torrent.on('error', (err) => {
@@ -71,8 +77,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         listItem.appendChild(fileName);
 
                         const downloadButton = document.createElement('button');
-                        downloadButton.className = 'btn btn-primary btn-sm';
+                        downloadButton.className = 'btn btn-primary btn-sm download-button';
                         downloadButton.innerHTML = '<i class="fas fa-download"></i> Download';
+                        downloadButton.disabled = true; // Disable button until download is complete
                         downloadButton.onclick = () => {
                             file.getBlobURL((err, url) => {
                                 if (err) throw err;
