@@ -4,47 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WebNetTorrent</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/webtorrent/webtorrent.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
     <div class="container">
-        <div class="text-center mb-5">
-            <h1 class="display-4">WebNetTorrent</h1>
-            <p class="lead">Effortlessly Download Your Torrents</p>
+        <h1>WebNetTorrent</h1>
+        <div class="input-group">
+            <input type="text" id="magnetLink" placeholder="Enter Magnet Link">
+            <button id="startMagnetButton" class="btn">Start Torrent</button>
         </div>
-        <div class="card shadow-sm mb-4" id="inputSection">
-            <div class="card-body">
-                <div class="input-group mb-3">
-                    <input type="text" id="magnetLink" class="form-control" placeholder="Paste magnet link here">
-                    <button id="startMagnetButton" class="btn btn-primary">Start Torrent</button>
-                </div>
-                <div class="input-group">
-                    <input type="file" id="torrentFile" class="form-control" accept=".torrent">
-                    <button id="startTorrentButton" class="btn btn-primary">Start Torrent</button>
-                </div>
-            </div>
+        <div class="input-group">
+            <input type="file" id="torrentFile">
+            <button id="startTorrentButton" class="btn">Start Torrent</button>
         </div>
-        <div class="card shadow-sm mb-4" id="progressSection" style="display: none;">
-            <div class="card-body">
-                <div id="progressText" class="mb-2">0 MB of 0 MB — 0 seconds remaining</div>
-                <div class="progress">
-                    <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%;"></div>
-                </div>
-            </div>
+        <div class="input-group">
+            <input type="file" id="createTorrentFiles" multiple>
+            <button id="createTorrentButton" class="btn">Create Torrent</button>
         </div>
-        <div class="card shadow-sm mb-4" id="fileListSection" style="display: none;">
-            <div class="card-body">
-                <ul id="fileList" class="list-group"></ul>
+        <div id="progressSection" class="progress-section" style="display: none;">
+            <div class="progress">
+                <div id="progressBar" class="progress-bar"></div>
             </div>
+            <p id="progressText"></p>
+        </div>
+        <div id="fileListSection" class="file-list-section" style="display: none;">
+            <h3>Files</h3>
+            <ul id="fileList" class="list-group"></ul>
         </div>
     </div>
-    <footer class="text-center text-white mt-5">
-        <p>&copy; 2025 WebNetTorrent. All rights reserved.</p>
-    </footer>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+    <!-- Disclaimer Modal -->
+    <div id="disclaimerModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p>Website owner is not responsible for anything. Fully user is responsible.</p>
+            <button id="acceptDisclaimer" class="btn">Accept</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/webtorrent/webtorrent.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/create-torrent@5.0.0/dist/index.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

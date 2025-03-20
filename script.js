@@ -1,6 +1,31 @@
 document.addEventListener('DOMContentLoaded', function () {
     const client = new WebTorrent();
 
+    // Show disclaimer modal on page load
+    const disclaimerModal = document.getElementById('disclaimerModal');
+    const closeModal = document.getElementsByClassName('close')[0];
+    const acceptDisclaimer = document.getElementById('acceptDisclaimer');
+
+    // Display the modal
+    disclaimerModal.style.display = 'block';
+
+    // Close the modal when the user clicks on the close button
+    closeModal.onclick = function () {
+        disclaimerModal.style.display = 'none';
+    }
+
+    // Close the modal when the user clicks on the accept button
+    acceptDisclaimer.onclick = function () {
+        disclaimerModal.style.display = 'none';
+    }
+
+    // Close the modal when the user clicks anywhere outside of the modal
+    window.onclick = function (event) {
+        if (event.target === disclaimerModal) {
+            disclaimerModal.style.display = 'none';
+        }
+    }
+
     document.getElementById('startMagnetButton').addEventListener('click', function () {
         const magnetLink = document.getElementById('magnetLink').value;
         if (magnetLink) {
@@ -16,11 +41,22 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    document.getElementById('createTorrentButton').addEventListener('click', function () {
+        const fileInput = document.getElementById('createTorrentFiles');
+        if (fileInput.files.length > 0) {
+            createTorrent(fileInput.files);
+        }
+    });
+
     function formatTime(seconds) {
         const h = Math.floor(seconds / 3600);
         const m = Math.floor((seconds % 3600) / 60);
         const s = Math.floor(seconds % 60);
-        return `${h}h ${m}m ${s}s`;
+
+        const hDisplay = h > 0 ? `${h}h ` : "";
+        const mDisplay = m > 0 ? `${m}m ` : "";
+        const sDisplay = s > 0 ? `${s}s` : "";
+        return `${hDisplay}${mDisplay}${sDisplay}`.trim();
     }
 
     function addTorrent(torrentIdOrFile) {
@@ -112,5 +148,21 @@ document.addEventListener('DOMContentLoaded', function () {
             const progressText = document.getElementById('progressText');
             progressText.textContent = 'Failed to add torrent: ' + error.message;
         }
+    }
+
+    function createTorrent(files) {
+        createTorrent(files, (err, torrent) => {
+            if (err) {
+                console.error('Failed to create torrent:', err);
+                return;
+            }
+
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(new Blob([torrent], { type: 'application/x-bittorrent' }));
+            link.download = 'created.torrent';
+            link.click();
+
+            console.log('Torrent created successfully');
+        });
     }
 });
