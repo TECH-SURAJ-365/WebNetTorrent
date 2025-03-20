@@ -169,3 +169,27 @@ h1 {
 #acceptDisclaimer {
     margin-top: 30px;
 }
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    .input-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .input-group input[type="text"],
+    .input-group input[type="file"],
+    .input-group button {
+        margin-right: 0;
+        margin-bottom: 10px;
+        width: 100%;
+    }
+}

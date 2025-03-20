@@ -12,19 +12,19 @@ document.addEventListener('DOMContentLoaded', function () {
     // Close the modal when the user clicks on the close button
     closeModal.onclick = function () {
         disclaimerModal.style.display = 'none';
-    }
+    };
 
     // Close the modal when the user clicks on the accept button
     acceptDisclaimer.onclick = function () {
         disclaimerModal.style.display = 'none';
-    }
+    };
 
     // Close the modal when the user clicks anywhere outside of the modal
     window.onclick = function (event) {
         if (event.target === disclaimerModal) {
             disclaimerModal.style.display = 'none';
         }
-    }
+    };
 
     document.getElementById('startMagnetButton').addEventListener('click', function () {
         const magnetLink = document.getElementById('magnetLink').value;
