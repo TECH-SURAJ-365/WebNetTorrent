@@ -59,6 +59,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // Handle torrent metadata fetched event
                 torrent.on('metadata', () => {
+                    console.log('Metadata fetched for torrent:', torrent.name);
                     fileListSection.style.display = 'block';
                     fileList.innerHTML = '';
                     torrent.files.forEach(file => {
@@ -86,6 +87,11 @@ document.addEventListener('DOMContentLoaded', function () {
                         fileList.appendChild(listItem);
                     });
                 });
+
+                // Ensure metadata is fetched for uploaded torrent files
+                if (torrent.infoHash) {
+                    torrent.emit('metadata');
+                }
             });
         } catch (error) {
             console.error('Failed to add torrent:', error);
