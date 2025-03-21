@@ -1,168 +1,146 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const client = new WebTorrent();
+// Initialize WebTorrent client
+const client = new WebTorrent();
 
-    // Show disclaimer modal on page load
-    const disclaimerModal = document.getElementById('disclaimerModal');
-    const closeModal = document.getElementsByClassName('close')[0];
-    const acceptDisclaimer = document.getElementById('acceptDisclaimer');
-
-    // Display the modal
-    disclaimerModal.style.display = 'block';
-
-    // Close the modal when the user clicks on the close button
-    closeModal.onclick = function () {
-        disclaimerModal.style.display = 'none';
-    };
-
-    // Close the modal when the user clicks on the accept button
-    acceptDisclaimer.onclick = function () {
-        disclaimerModal.style.display = 'none';
-    };
-
-    // Close the modal when the user clicks anywhere outside of the modal
-    window.onclick = function (event) {
-        if (event.target === disclaimerModal) {
-            disclaimerModal.style.display = 'none';
-        }
-    };
-
-    document.getElementById('startMagnetButton').addEventListener('click', function () {
-        const magnetLink = document.getElementById('magnetLink').value;
-        if (magnetLink) {
-            addTorrent(magnetLink);
-        }
+// Tab switching function
+function openTab(tabName) {
+    const tabContents = document.querySelectorAll('.tab-content');
+    tabContents.forEach(content => {
+        content.classList.remove('active');
     });
+    document.getElementById(tabName).classList.add('active');
 
-    document.getElementById('startTorrentButton').addEventListener('click', function () {
-        const fileInput = document.getElementById('torrentFile');
-        if (fileInput.files.length > 0) {
-            const file = fileInput.files[0];
-            addTorrent(file);
-        }
+    const tabButtons = document.querySelectorAll('.tab-button');
+    tabButtons.forEach(button => {
+        button.classList.remove('active');
     });
+    document.querySelector(`.tab-button[onclick="openTab('${tabName}')"]`).classList.add('active');
+}
 
-    document.getElementById('createTorrentButton').addEventListener('click', function () {
-        const fileInput = document.getElementById('createTorrentFiles');
-        if (fileInput.files.length > 0) {
-            createTorrent(fileInput.files);
+// Function to add a torrent (magnet link or .torrent file)
+function addTorrent() {
+    const magnetInput = document.getElementById('magnetInput');
+    const torrentFileInput = document.getElementById('torrentFile');
+    const torrentList = document.getElementById('torrentList');
+    const status = document.getElementById('status');
+
+    let torrentData;
+    if (torrentFileInput.files && torrentFileInput.files.length > 0) {
+        torrentData = torrentFileInput.files[0];
+        status.textContent = 'Processing .torrent file...';
+    } else {
+        const magnetURI = magnetInput.value.trim();
+        if (!magnetURI) {
+            status.textContent = 'Please enter a magnet link or upload a .torrent file';
+            return;
         }
-    });
-
-    function formatTime(seconds) {
-        const h = Math.floor(seconds / 3600);
-        const m = Math.floor((seconds % 3600) / 60);
-        const s = Math.floor(seconds % 60);
-
-        const hDisplay = h > 0 ? `${h}h ` : "";
-        const mDisplay = m > 0 ? `${m}m ` : "";
-        const sDisplay = s > 0 ? `${s}s` : "";
-        return `${hDisplay}${mDisplay}${sDisplay}`.trim();
+        if (!magnetURI.startsWith('magnet:')) {
+            status.textContent = 'Invalid magnet link: Must start with "magnet:"';
+            return;
+        }
+        torrentData = magnetURI;
+        status.textContent = 'Processing magnet link...';
     }
 
-    function addTorrent(torrentIdOrFile) {
-        // Check if the torrent is already added
-        if (client.get(torrentIdOrFile)) {
-            console.log('Torrent already added:', torrentIdOrFile);
+    client.add(torrentData, {
+        announce: [
+            'wss://tracker.openwebtorrent.com',
+            'wss://tracker.btorrent.xyz',
+            'wss://tracker.fastcast.nz'
+        ]
+    }, (torrent) => {
+        const torrentItem = document.createElement('div');
+        torrentItem.className = 'torrent-item';
+        torrentItem.innerHTML = `
+            <h3>${torrent.name || 'Unknown Torrent'}</h3>
+            <p>Size: ${torrent.length ? (torrent.length / 1024 / 1024).toFixed(2) : 'N/A'} MB</p>
+            <p>Progress: <span class="progress">0%</span></p>
+            <p>Speed: <span class="speed">0 KB/s</span></p>
+        `;
+        torrentList.appendChild(torrentItem);
+
+        torrent.on('metadata', () => {
+            status.textContent = `Metadata received for: ${torrent.name}`;
+            const sizeElement = torrentItem.querySelector('p:nth-child(2)');
+            sizeElement.textContent = `Size: ${(torrent.length / 1024 / 1024).toFixed(2)} MB`;
+        });
+
+        torrent.on('download', () => {
+            const progress = torrentItem.querySelector('.progress');
+            const speed = torrentItem.querySelector('.speed');
+            progress.textContent = `${Math.round(torrent.progress * 100)}%`;
+            speed.textContent = `${(torrent.downloadSpeed / 1024).toFixed(2)} KB/s`;
+            status.textContent = `Downloading: ${torrent.name}`;
+        });
+
+        torrent.on('done', () => {
+            status.textContent = `Finished downloading: ${torrent.name}`;
+            torrent.files.forEach(file => {
+                file.getBlobURL((err, url) => {
+                    if (!err) {
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.download = file.name;
+                        link.textContent = `Download ${file.name}`;
+                        torrentItem.appendChild(link);
+                    } else {
+                        status.textContent = `Error generating download link: ${err.message}`;
+                    }
+                });
+            });
+        });
+
+        torrent.on('error', (err) => {
+            status.textContent = `Torrent error: ${err.message}`;
+        });
+    });
+
+    client.on('error', (err) => {
+        status.textContent = `Client error: ${err.message}`;
+    });
+}
+
+// Function to create a torrent
+function createTorrent() {
+    const filesInput = document.getElementById('filesToTorrent');
+    const torrentNameInput = document.getElementById('torrentName');
+    const trackersInput = document.getElementById('torrentTrackers');
+    const createStatus = document.getElementById('createStatus');
+
+    const files = filesInput.files;
+    if (files.length === 0) {
+        createStatus.textContent = 'Please select at least one file.';
+        return;
+    }
+
+    const options = {
+        name: torrentNameInput.value || 'MyTorrent',
+        announce: trackersInput.value
+            ? trackersInput.value.split(',').map(t => t.trim())
+            : ['wss://tracker.openwebtorrent.com'],
+        createdBy: 'WebNetTorrent'
+    };
+
+    createStatus.textContent = 'Creating torrent...';
+
+    // Use the standalone createTorrent function from the create-torrent library
+    createTorrent(files, options, (err, torrent) => {
+        if (err) {
+            createStatus.textContent = `Error creating torrent: ${err.message}`;
             return;
         }
 
-        try {
-            client.add(torrentIdOrFile, function (torrent) {
-                const progressSection = document.getElementById('progressSection');
-                const progressBar = document.getElementById('progressBar');
-                const progressText = document.getElementById('progressText');
-                const fileListSection = document.getElementById('fileListSection');
-                const fileList = document.getElementById('fileList');
+        const blob = new Blob([torrent], { type: 'application/x-bittorrent' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${options.name}.torrent`;
+        a.textContent = 'Download .torrent file';
+        createStatus.innerHTML = '';
+        createStatus.appendChild(a);
+    });
+}
 
-                progressSection.style.display = 'block';
-
-                torrent.on('download', () => {
-                    const percent = Math.round(torrent.progress * 100);
-                    progressBar.style.width = percent + '%';
-                    const downloadedMB = (torrent.downloaded / (1024 * 1024)).toFixed(2);
-                    const totalMB = (torrent.length / (1024 * 1024)).toFixed(2);
-                    const timeRemaining = formatTime(torrent.timeRemaining / 1000);
-                    progressText.textContent = `${downloadedMB} MB of ${totalMB} MB — ${timeRemaining} remaining`;
-                });
-
-                torrent.on('done', () => {
-                    progressText.textContent = 'Download complete';
-                    progressBar.style.width = '100%';
-
-                    // Enable download buttons
-                    const downloadButtons = document.querySelectorAll('.download-button');
-                    downloadButtons.forEach(button => {
-                        button.disabled = false;
-                    });
-                });
-
-                torrent.on('error', (err) => {
-                    console.error('Torrent error:', err);
-                    progressText.textContent = 'Error occurred: ' + err.message;
-                });
-
-                torrent.on('noPeers', (announceType) => {
-                    console.warn('No peers found for torrent:', announceType);
-                    progressText.textContent = 'No peers found. Please check the magnet link or torrent file.';
-                });
-
-                // Handle torrent metadata fetched event
-                torrent.on('metadata', () => {
-                    console.log('Metadata fetched for torrent:', torrent.name);
-                    fileListSection.style.display = 'block';
-                    fileList.innerHTML = '';
-                    torrent.files.forEach(file => {
-                        const listItem = document.createElement('li');
-                        listItem.className = 'list-group-item';
-
-                        const fileName = document.createElement('span');
-                        fileName.textContent = file.name;
-                        listItem.appendChild(fileName);
-
-                        const downloadButton = document.createElement('button');
-                        downloadButton.className = 'btn btn-primary btn-sm download-button';
-                        downloadButton.innerHTML = '<i class="fas fa-download"></i> Download';
-                        downloadButton.disabled = true; // Disable button until download is complete
-                        downloadButton.onclick = () => {
-                            file.getBlobURL((err, url) => {
-                                if (err) throw err;
-                                const a = document.createElement('a');
-                                a.href = url;
-                                a.download = file.name;
-                                a.click();
-                            });
-                        };
-                        listItem.appendChild(downloadButton);
-
-                        fileList.appendChild(listItem);
-                    });
-                });
-
-                // Ensure metadata is fetched for uploaded torrent files
-                if (torrent.infoHash) {
-                    torrent.emit('metadata');
-                }
-            });
-        } catch (error) {
-            console.error('Failed to add torrent:', error);
-            const progressText = document.getElementById('progressText');
-            progressText.textContent = 'Failed to add torrent: ' + error.message;
-        }
-    }
-
-    function createTorrent(files) {
-        createTorrent(files, (err, torrent) => {
-            if (err) {
-                console.error('Failed to create torrent:', err);
-                return;
-            }
-
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(new Blob([torrent], { type: 'application/x-bittorrent' }));
-            link.download = 'created.torrent';
-            link.click();
-
-            console.log('Torrent created successfully');
-        });
-    }
-});
+// Clean up when page is closed
+window.onbeforeunload = () => {
+    client.destroy();
+};

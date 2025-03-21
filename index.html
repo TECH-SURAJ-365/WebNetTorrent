@@ -1,94 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WebNetTorrent</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
-
 <body>
     <div class="container">
-        <header>
-            <h1>WebNetTorrent</h1>
-        </header>
-        <!-- Tabs navigation -->
-        <nav class="tabs">
-            <button class="tablinks" onclick="openTab(event, 'MagnetLink')">Magnet Link</button>
-            <button class="tablinks" onclick="openTab(event, 'TorrentUpload')">.Torrent Upload</button>
-            <button class="tablinks" onclick="openTab(event, 'CreateTorrent')">Create Torrent</button>
-        </nav>
-
-        <!-- Tab content -->
-        <main>
-            <section id="MagnetLink" class="tabcontent">
-                <div class="input-group">
-                    <input type="text" id="magnetLink" placeholder="Enter Magnet Link">
-                    <button id="startMagnetButton" class="btn">Start Torrent</button>
-                </div>
-            </section>
-
-            <section id="TorrentUpload" class="tabcontent">
-                <div class="input-group">
-                    <input type="file" id="torrentFile">
-                    <button id="startTorrentButton" class="btn">Start Torrent</button>
-                </div>
-            </section>
-
-            <section id="CreateTorrent" class="tabcontent">
-                <div class="input-group">
-                    <input type="file" id="createTorrentFiles" multiple>
-                    <button id="createTorrentButton" class="btn">Create Torrent</button>
-                </div>
-            </section>
-
-            <section id="progressSection" class="progress-section" style="display: none;">
-                <div class="progress">
-                    <div id="progressBar" class="progress-bar"></div>
-                </div>
-                <p id="progressText"></p>
-            </section>
-            <section id="fileListSection" class="file-list-section" style="display: none;">
-                <h3>Files</h3>
-                <ul id="fileList" class="list-group"></ul>
-            </section>
-        </main>
-
-        <!-- Disclaimer Modal -->
-        <div id="disclaimerModal" class="modal">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <p>By using our platform, you agree to comply with all relevant copyright laws and regulations.</p>
-                <button id="acceptDisclaimer" class="btn">Accept</button>
+        <h1>WebNetTorrent</h1>
+        <div class="tabs">
+            <button class="tab-button active" onclick="openTab('download')">Download Torrents</button>
+            <button class="tab-button" onclick="openTab('create')">Create Torrents</button>
+        </div>
+        <div id="download" class="tab-content active">
+            <div class="input-section">
+                <input type="text" id="magnetInput" placeholder="Enter magnet link...">
+                <label for="torrentFile" class="file-label">Upload .torrent</label>
+                <input type="file" id="torrentFile" accept=".torrent" style="display: none;">
+                <button onclick="addTorrent()">Add Torrent</button>
             </div>
+            <div id="torrentList"></div>
+            <div id="status"></div>
+        </div>
+        <div id="create" class="tab-content">
+            <h2>Create Your Own Torrent</h2>
+            <input type="file" id="filesToTorrent" multiple>
+            <input type="text" id="torrentName" placeholder="Torrent Name (optional)">
+            <input type="text" id="torrentTrackers" placeholder="Trackers (comma-separated, optional)">
+            <button onclick="createTorrent()">Create Torrent</button>
+            <div id="createStatus"></div>
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/webtorrent/webtorrent.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/create-torrent@5.0.0/dist/index.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/webtorrent@latest/webtorrent.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/create-torrent@latest/create-torrent.min.js"></script>
     <script src="script.js"></script>
-    <script>
-        function openTab(evt, tabName) {
-            var i, tabcontent, tablinks;
-            tabcontent = document.getElementsByClassName("tabcontent");
-            for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].style.display = "none";
-            }
-            tablinks = document.getElementsByClassName("tablinks");
-            for (i = 0; i < tablinks.length; i++) {
-                tablinks[i].className = tablinks[i].className.replace(" active", "");
-            }
-            document.getElementById(tabName).style.display = "block";
-            evt.currentTarget.className += " active";
-        }
-
-        // Open the default tab
-        document.addEventListener("DOMContentLoaded", function () {
-            document.querySelector(".tablinks").click();
-        });
-    </script>
 </body>
-
 </html>
