@@ -72,15 +72,18 @@ function addTorrent() {
 
         // Populate file list once metadata is available
         torrent.on('metadata', () => {
+            console.log('Metadata received:', torrent.files);
             status.textContent = `Metadata received for: ${torrent.name}`;
             const sizeElement = torrentItem.querySelector('p:nth-child(2)');
             sizeElement.textContent = `Size: ${(torrent.length / 1024 / 1024).toFixed(2)} MB`;
 
             // Display list of files
             const fileList = torrentItem.querySelector('.files');
+            fileList.innerHTML = '';
             torrent.files.forEach(file => {
                 const li = document.createElement('li');
                 li.textContent = `${file.name} (${(file.length / 1024 / 1024).toFixed(2)} MB)`;
+                li.setAttribute('data-file-name', file.name);
                 fileList.appendChild(li);
             });
         });
@@ -95,24 +98,35 @@ function addTorrent() {
         });
 
         torrent.on('done', () => {
+            console.log('Download completed:', torrent.files);
             status.textContent = `Download Complete: ${torrent.name}`;
             const speed = torrentItem.querySelector('.speed');
             speed.textContent = '0 KB/s';
             const fileList = torrentItem.querySelector('.files');
-            torrent.files.forEach(file => {
-                const li = Array.from(fileList.children).find(item => item.textContent.includes(file.name));
-                file.getBlobURL((err, url) => {
-                    if (!err) {
-                        const link = document.createElement('a');
-                        link.href = url;
-                        link.download = file.name;
-                        link.textContent = 'Download';
-                        link.style.marginLeft = '10px';
-                        li.appendChild(link);
-                    } else {
-                        status.textContent = `Error generating download link: ${err.message}`;
-                    }
+            if (fileList.children.length === 0) {
+                torrent.files.forEach(file => {
+                    const li = document.createElement('li');
+                    li.textContent = `${file.name} (${(file.length / 1024 / 1024).toFixed(2)} MB)`;
+                    li.setAttribute('data-file-name', file.name);
+                    fileList.appendChild(li);
                 });
+            }
+            torrent.files.forEach(file => {
+                const li = Array.from(fileList.children).find(item => item.getAttribute('data-file-name') === file.name);
+                if (li) {
+                    file.getBlobURL((err, url) => {
+                        if (!err) {
+                            const link = document.createElement('a');
+                            link.href = url;
+                            link.download = file.name;
+                            link.textContent = 'Download';
+                            link.className = 'download-link';
+                            li.appendChild(link);
+                        } else {
+                            status.textContent = `Error generating download link: ${err.message}`;
+                        }
+                    });
+                }
             });
         });
 
@@ -149,7 +163,6 @@ function createTorrent() {
 
     createStatus.textContent = 'Creating torrent...';
 
-    // Use the standalone createTorrent function from the create-torrent library
     createTorrent(files, options, (err, torrent) => {
         if (err) {
             createStatus.textContent = `Error creating torrent: ${err.message}`;

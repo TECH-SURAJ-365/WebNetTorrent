@@ -1,3 +1,15 @@
+/* CSS Variables for Consistency */
+:root {
+    --primary-color: #3498db;
+    --secondary-color: #2c3e50;
+    --background-color: #f5f6fa;
+    --text-color: #333;
+    --light-gray: #ecf0f1;
+    --border-color: #e0e0e0;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+}
+
 /* Reset and Base Styles */
 * {
     margin: 0;
@@ -9,10 +21,11 @@ body {
     font-family: 'Roboto', sans-serif;
     background: url('background.jpeg') no-repeat center center fixed;
     background-size: cover;
-    background-color: #f5f6fa; /* Fallback color if image fails to load */
+    background-color: var(--background-color);
     color: #fff;
-    padding: 40px;
+    padding: 20px;
     position: relative;
+    min-height: 100vh;
 }
 
 /* Add a semi-transparent overlay to improve readability */
@@ -30,46 +43,49 @@ body::before {
 .container {
     max-width: 900px;
     margin: 0 auto;
-    background-color: rgba(255, 255, 255, 0.7); /* More transparent */
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.9));
     padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    color: #333;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    color: var(--text-color);
 }
 
 h1 {
-    color: #2c3e50;
+    color: var(--secondary-color);
     text-align: center;
     font-size: 2.5em;
     margin-bottom: 30px;
     font-weight: 700;
+    letter-spacing: 1px;
+    /* Removed text-transform: uppercase; to preserve original capitalization */
 }
 
 /* Tabs */
 .tabs {
     display: flex;
     margin-bottom: 20px;
+    border-bottom: 2px solid var(--border-color);
 }
 
 .tab-button {
     flex: 1;
     padding: 12px;
-    background-color: #ecf0f1;
+    background: var(--light-gray);
     border: none;
-    border-radius: 6px 6px 0 0;
+    border-radius: 8px 8px 0 0;
     font-size: 1em;
     font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: var(--transition);
 }
 
 .tab-button.active {
-    background-color: #3498db;
+    background: var(--primary-color);
     color: white;
 }
 
 .tab-button:hover {
-    background-color: #bdc3c7;
+    background: #d0d4d8;
 }
 
 .tab-content {
@@ -86,66 +102,76 @@ h1 {
     display: flex;
     gap: 15px;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 input[type="text"], input[type="file"] {
     flex: 1;
     padding: 12px 15px;
-    border: 2px solid #e0e0e0;
+    border: 2px solid var(--border-color);
     border-radius: 6px;
     font-size: 1em;
-    transition: border-color 0.3s ease;
+    transition: var(--transition);
+    min-width: 200px;
 }
 
 input[type="text"]:focus, input[type="file"]:focus {
     outline: none;
-    border-color: #3498db;
+    border-color: var(--primary-color);
     box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
 }
 
 .file-label {
     padding: 12px 25px;
-    background-color: #2c3e50;
+    background: var(--secondary-color);
     color: white;
     border-radius: 6px;
     font-size: 1em;
     font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: var(--transition);
 }
 
 .file-label:hover {
-    background-color: #233140;
+    background: #233140;
 }
 
 button {
     padding: 12px 25px;
-    background-color: #3498db;
+    background: var(--primary-color);
     color: white;
     border: none;
     border-radius: 6px;
     font-size: 1em;
     font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: var(--transition);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 button:hover {
-    background-color: #2980b9;
+    background: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* Torrent Item */
 .torrent-item {
     margin: 20px 0;
     padding: 20px;
-    background-color: #fff;
-    border: 1px solid #ececec;
-    border-radius: 6px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    background: white;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+}
+
+.torrent-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 .torrent-item h3 {
-    color: #2c3e50;
+    color: var(--secondary-color);
     font-size: 1.3em;
     margin-bottom: 10px;
 }
@@ -153,19 +179,7 @@ button:hover {
 .torrent-item p {
     margin: 8px 0;
     color: #666;
-}
-
-.torrent-item a {
-    display: inline-block;
-    margin-top: 10px;
-    color: #3498db;
-    text-decoration: none;
-    font-weight: 500;
-    transition: color 0.3s ease;
-}
-
-.torrent-item a:hover {
-    color: #e74c3c;
+    font-size: 0.95em;
 }
 
 /* File List Styling */
@@ -174,7 +188,7 @@ button:hover {
 }
 
 .file-list h4 {
-    color: #2c3e50;
+    color: var(--secondary-color);
     font-size: 1.1em;
     margin-bottom: 10px;
 }
@@ -185,40 +199,72 @@ button:hover {
 }
 
 .file-list li {
-    padding: 8px 0;
-    border-bottom: 1px solid #ececec;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-color);
     display: flex;
     justify-content: space-between;
     align-items: center;
+    font-size: 0.9em;
+    color: #555;
 }
 
 .file-list li:last-child {
     border-bottom: none;
 }
 
-.file-list a {
-    color: #3498db;
+.file-list a.download-link {
+    color: var(--primary-color);
     text-decoration: none;
     font-weight: 500;
+    padding: 5px 10px;
+    border: 1px solid var(--primary-color);
+    border-radius: 4px;
+    transition: var(--transition);
 }
 
-.file-list a:hover {
-    color: #e74c3c;
+.file-list a.download-link:hover {
+    background: var(--primary-color);
+    color: white;
 }
 
 #status, #createStatus {
     margin-top: 20px;
     padding: 15px;
-    background-color: #f8f9fd;
+    background: #f8f9fd;
     border-radius: 6px;
-    border-left: 4px solid #3498db;
+    border-left: 4px solid var(--primary-color);
     color: #555;
     font-style: italic;
+    font-size: 0.95em;
 }
 
 /* Create Torrent Section */
 #create h2 {
-    color: #2c3e50;
+    color: var(--secondary-color);
     font-size: 1.5em;
     margin-bottom: 15px;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .container {
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 2em;
+    }
+
+    .input-section {
+        flex-direction: column;
+    }
+
+    input[type="text"], input[type="file"], button {
+        width: 100%;
+    }
+
+    .tab-button {
+        font-size: 0.9em;
+        padding: 10px;
+    }
 }
