@@ -16,6 +16,14 @@ function openTab(tabName) {
     document.querySelector(`.tab-button[onclick="openTab('${tabName}')"]`).classList.add('active');
 }
 
+// Function to format speed (convert KB/s to MB/s if >= 1024 KB/s)
+function formatSpeed(speedInKB) {
+    if (speedInKB >= 1024) {
+        return `${(speedInKB / 1024).toFixed(2)} MB/s`;
+    }
+    return `${speedInKB.toFixed(2)} KB/s`;
+}
+
 // Function to add a torrent (magnet link or .torrent file)
 function addTorrent() {
     const magnetInput = document.getElementById('magnetInput');
@@ -55,33 +63,52 @@ function addTorrent() {
             <p>Size: ${torrent.length ? (torrent.length / 1024 / 1024).toFixed(2) : 'N/A'} MB</p>
             <p>Progress: <span class="progress">0%</span></p>
             <p>Speed: <span class="speed">0 KB/s</span></p>
+            <div class="file-list">
+                <h4>Files:</h4>
+                <ul class="files"></ul>
+            </div>
         `;
         torrentList.appendChild(torrentItem);
 
+        // Populate file list once metadata is available
         torrent.on('metadata', () => {
             status.textContent = `Metadata received for: ${torrent.name}`;
             const sizeElement = torrentItem.querySelector('p:nth-child(2)');
             sizeElement.textContent = `Size: ${(torrent.length / 1024 / 1024).toFixed(2)} MB`;
+
+            // Display list of files
+            const fileList = torrentItem.querySelector('.files');
+            torrent.files.forEach(file => {
+                const li = document.createElement('li');
+                li.textContent = `${file.name} (${(file.length / 1024 / 1024).toFixed(2)} MB)`;
+                fileList.appendChild(li);
+            });
         });
 
         torrent.on('download', () => {
             const progress = torrentItem.querySelector('.progress');
             const speed = torrentItem.querySelector('.speed');
-            progress.textContent = `${Math.round(torrent.progress * 100)}%`;
-            speed.textContent = `${(torrent.downloadSpeed / 1024).toFixed(2)} KB/s`;
+            const progressValue = Math.round(torrent.progress * 100);
+            progress.textContent = `${progressValue}%`;
+            speed.textContent = formatSpeed(torrent.downloadSpeed / 1024);
             status.textContent = `Downloading: ${torrent.name}`;
         });
 
         torrent.on('done', () => {
-            status.textContent = `Finished downloading: ${torrent.name}`;
+            status.textContent = `Download Complete: ${torrent.name}`;
+            const speed = torrentItem.querySelector('.speed');
+            speed.textContent = '0 KB/s';
+            const fileList = torrentItem.querySelector('.files');
             torrent.files.forEach(file => {
+                const li = Array.from(fileList.children).find(item => item.textContent.includes(file.name));
                 file.getBlobURL((err, url) => {
                     if (!err) {
                         const link = document.createElement('a');
                         link.href = url;
                         link.download = file.name;
-                        link.textContent = `Download ${file.name}`;
-                        torrentItem.appendChild(link);
+                        link.textContent = 'Download';
+                        link.style.marginLeft = '10px';
+                        li.appendChild(link);
                     } else {
                         status.textContent = `Error generating download link: ${err.message}`;
                     }
