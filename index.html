@@ -9,7 +9,7 @@
 </head>
 <body>
     <!-- Local Video Background -->
-    <video class="video-background" autoplay muted loop playsinline>
+    <video class="video-background" autoplay muted loop playsinline id="backgroundVideo">
         <source src="background.mp4" type="video/mp4">
         Your browser does not support the video tag.
     </video>
@@ -39,6 +39,10 @@
             <div id="createStatus"></div>
         </div>
     </div>
+
+    <!-- Mute/Unmute Button -->
+    <button id="muteButton" class="mute-button">Unmute</button>
+
     <script src="https://cdn.jsdelivr.net/npm/webtorrent@latest/webtorrent.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/create-torrent@latest/create-torrent.min.js"></script>
     <script src="script.js"></script>

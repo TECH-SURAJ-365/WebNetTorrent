@@ -180,6 +180,40 @@ function createTorrent() {
     });
 }
 
+// Mute/Unmute Functionality with Error Handling
+const video = document.getElementById('backgroundVideo');
+const muteButton = document.getElementById('muteButton');
+
+// Set initial button text based on video's muted state
+muteButton.textContent = video.muted ? 'Unmute' : 'Mute';
+
+// Toggle mute/unmute on button click
+muteButton.addEventListener('click', () => {
+    if (video.muted) {
+        video.muted = false;
+        muteButton.textContent = 'Mute';
+    } else {
+        video.muted = true;
+        muteButton.textContent = 'Unmute';
+    }
+});
+
+// Add error handling for video
+video.addEventListener('error', (e) => {
+    console.error('Video error:', e);
+    alert('Failed to load the background video. Please check the file path or re-encode the video.');
+});
+
+video.addEventListener('stalled', () => {
+    console.warn('Video stalled. Attempting to replay...');
+    video.play().catch(err => console.error('Replay failed:', err));
+});
+
+video.addEventListener('canplay', () => {
+    console.log('Video can play. Starting playback...');
+    video.play().catch(err => console.error('Playback failed:', err));
+});
+
 // Clean up when page is closed
 window.onbeforeunload = () => {
     client.destroy();
