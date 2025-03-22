@@ -50,7 +50,7 @@ body {
 }
 
 h1 {
-    color: var(--secondary-color);
+    color: white; /* Changed to white */
     text-align: center;
     font-size: 2.5em;
     margin-bottom: 30px;
@@ -69,7 +69,7 @@ h1 {
 .tab-button {
     flex: 1;
     padding: 12px;
-    background: rgba(255, 255, 255, 0.2); /* Semi-transparent background */
+    background: rgba(255, 255, 755, 0.2); /* Semi-transparent background */
     border: none;
     border-radius: 8px 8px 0 0;
     font-size: 1em;
