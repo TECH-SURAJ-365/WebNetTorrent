@@ -180,7 +180,7 @@ function createTorrent() {
     });
 }
 
-// Mute/Unmute Functionality with Error Handling
+// Mute/Unmute Functionality
 const video = document.getElementById('backgroundVideo');
 const muteButton = document.getElementById('muteButton');
 
