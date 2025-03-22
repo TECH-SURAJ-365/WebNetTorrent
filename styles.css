@@ -19,13 +19,24 @@
 
 body {
     font-family: 'Roboto', sans-serif;
-    background: url('background.jpeg') no-repeat center center fixed;
-    background-size: cover;
-    background-color: var(--background-color);
+    background-color: var(--background-color); /* Fallback color */
     color: #fff;
     padding: 20px;
     position: relative;
     min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Video Background */
+.video-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures the video covers the entire background */
+    z-index: -2;
+    pointer-events: none; /* Prevents interaction with the video */
 }
 
 /* Add a semi-transparent overlay to improve readability */
@@ -36,7 +47,7 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.6); /* Slightly darker overlay for better contrast */
     z-index: -1;
 }
 
@@ -48,6 +59,8 @@ body::before {
     border-radius: 12px;
     box-shadow: var(--shadow);
     color: var(--text-color);
+    position: relative;
+    z-index: 1;
 }
 
 h1 {
@@ -57,7 +70,6 @@ h1 {
     margin-bottom: 30px;
     font-weight: 700;
     letter-spacing: 1px;
-    /* Removed text-transform: uppercase; to preserve original capitalization */
 }
 
 /* Tabs */
@@ -266,5 +278,10 @@ button:hover {
     .tab-button {
         font-size: 0.9em;
         padding: 10px;
+    }
+
+    .video-background {
+        height: 150%;
+        top: -25%;
     }
 }
