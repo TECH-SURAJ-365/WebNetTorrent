@@ -52,8 +52,8 @@ function addTorrent() {
     client.add(torrentData, {
         announce: [
             'wss://tracker.openwebtorrent.com',
-            'wss://tracker.btorrent.xyz',
-            'wss://tracker.fastcast.nz'
+            'wss://tracker.webtorrent.io',
+            'wss://tracker.files.fm:7073/announce'
         ]
     }, (torrent) => {
         const torrentItem = document.createElement('div');
@@ -157,11 +157,22 @@ function generateTorrent() {
         name: torrentNameInput.value || 'MyTorrent',
         announce: trackersInput.value
             ? trackersInput.value.split(',').map(t => t.trim())
-            : ['wss://tracker.openwebtorrent.com'],
+            : [
+                'wss://tracker.openwebtorrent.com',
+                'wss://tracker.webtorrent.io',
+                'wss://tracker.files.fm:7073/announce'
+            ],
         createdBy: 'WebNetTorrent'
     };
 
     createStatus.textContent = 'Creating torrent...';
+
+    // Check if createTorrent is defined
+    if (typeof createTorrent !== 'function') {
+        createStatus.textContent = 'Error: createTorrent library is not loaded. Please check your internet connection or try refreshing the page.';
+        console.error('createTorrent is not defined. Ensure the create-torrent library is loaded correctly.');
+        return;
+    }
 
     createTorrent(files, options, (err, torrent) => {
         if (err) {

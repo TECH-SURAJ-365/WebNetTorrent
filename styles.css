@@ -35,6 +35,7 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center; /* Center the video for better scaling */
     z-index: -2;
     pointer-events: none;
 }
@@ -69,7 +70,7 @@ h1 {
 .tab-button {
     flex: 1;
     padding: 12px;
-    background: rgba(255, 255, 755, 0.2); /* Semi-transparent background */
+    background: rgba(255, 255, 255, 0.2); /* Semi-transparent background */
     border: none;
     border-radius: 8px 8px 0 0;
     font-size: 1em;
