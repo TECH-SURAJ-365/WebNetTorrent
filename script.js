@@ -140,8 +140,8 @@ function addTorrent() {
     });
 }
 
-// Function to create a torrent
-function createTorrent() {
+// Function to create a torrent (renamed to avoid conflict)
+function generateTorrent() {
     const filesInput = document.getElementById('filesToTorrent');
     const torrentNameInput = document.getElementById('torrentName');
     const trackersInput = document.getElementById('torrentTrackers');
